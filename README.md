@@ -7,3 +7,15 @@ Companion repository with the artifacts to the Casino case study
 Robert Rubbens, Larisa Safina, Jonas Schiffl, Mattias Ulbrich, Alexander Weigl
 
 ## Contents
+
+This repository contains the material of the [Casino case study](https://verifythis.github.io/02casino/). In this paper we discuss several specification solutions. In particular you find the following solutions:
+
+* [uppaal]      -- Timed automata
+* [supervisory] --    
+* [tlaplus]     -- Classical model-checking
+* [solc-verify]  -- Code-based Verification based on Verification Condition
+* [secc]     -- 
+* [vercors]  --
+* [javabip]  -- 
+
+
