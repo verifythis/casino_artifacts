@@ -1,0 +1,157 @@
+// VerCors solution to the Casino Challenge.
+// By: Raul Monti at utwente dot nl
+
+
+// A Solidity message:
+class Message {
+  int sender;
+  int value;
+  ensures Perm(sender, 1) ** Perm(value, 1);
+  Message(int i) {
+    sender = i;
+    value = 0;
+  }
+}
+
+/*contract Casino*/
+
+class Casino{
+
+  // ghost balance (not in the contract)
+  // updated by Solidity.
+  int balance;
+  
+  int operator;
+  int pot;
+  int hashedNumber;
+  int player;
+  boolean guess; // True == HEADS, False == TAILS
+  int bet;
+  int state; // 0==IDLE, 1==GAME_AVAILABLE, >1 BET_PLACED
+
+  context m != null ** Perm(m.sender, read);
+  Casino (Message m) {
+    operator = m.sender;
+    state = 0;
+    pot = 0;
+    bet = 0;
+    balance = 0;
+  }
+
+
+  resource lock_invariant() = true
+    ** Perm(operator,write)
+    ** Perm(state,1\2)
+    ** Perm(pot,1\2)
+    ** Perm(bet,write)
+    ** Perm(balance,write)
+    ** Perm(hashedNumber,write)
+    ** Perm(player, write)
+    ** Perm(guess, write)
+    ** balance >= 0
+    ** (state <= 1 ==> bet == 0) // bet == 0 when bet not placed
+    ** balance == pot + bet      // [A] In sync. with contract balance.
+    ** pot >= bet                // [B] Allways possible to pay the winner.
+  ;
+
+  // Permissions:
+  context msg != null ** Perm(msg.sender, read) ** Perm(msg.value, read);
+  context Perm(pot,1\2);
+  // Functional contract:
+  requires msg.value >= 0;
+  void addToPot(Message msg) {
+    lock this;
+      payable(msg.value); // as a payable method, it changes the balance
+      pot = pot + msg.value;
+    unlock this;
+  }
+
+  // Abstract method that encodes the effect on the contract balance 
+  // when calling a payable method.
+  context Perm(balance, write); 
+  ensures balance == \old(balance) + amount;
+  void payable(int amount);
+  
+  context Perm(pot, 1\2);
+  context Perm(state, read);
+  // Functional contract:
+  requires amount <= pot;
+  context state == 0 || state == 1; // no active bet ongoing:
+  // Remove money from pot
+  void removeFromPot(int amount) {
+    lock this;    
+    transfer_(operator, amount);
+    unlock this;
+    lock this; 
+    pot = pot - amount;
+
+    unlock this;
+  }
+  
+  
+  // Abstract method encoding the effect on the balance when calling 
+  // address.transfer(). This is the only local effect of calling this 
+  // alien method.
+  context Perm(balance, write);
+  ensures balance == \old(balance) - amount;
+  void transfer_(int operator, int amount);
+
+  // Operator opens a bet
+  // Permissions:
+  context Perm(state,1\2);
+  context Perm(hashedNumber, 1\2);
+  // Functional contract:
+  requires state == 0;
+  void createGame(int _hashedNumber) {
+    lock this;
+    hashedNumber = _hashedNumber;
+    state = 1;
+    unlock this;
+  }
+
+  // Player places a bet
+  // Permissions:
+  context Perm(state, 1\2);
+  context Perm(pot, read);
+  context msg != null ** Perm(msg.sender, read) ** Perm(msg.value, read);
+  // Functional contract:
+  requires (state == 1);
+  requires (msg.value <= pot);
+  requires (msg.value >= 0);
+  void placeBet(boolean _guess, Message msg) {
+    lock this;
+    payable(msg.value); // payable
+    state = 2;
+    player = msg.sender;
+    bet = msg.value;
+    guess = _guess;
+    unlock this;
+  }
+
+  // Operator resolves a bet
+  // Permissions:
+  context Perm(pot, 1\2);
+  context Perm(state, 1\2);
+  // Functional contract:
+  requires state == 2;
+  void decideBet(int secretNumber) {
+    lock this;
+    boolean secret = (secretNumber % 2 == 0)? true : false;
+    if (secret == guess) {
+      // player wins, gets back twice her bet
+      pot = pot - bet;
+      transfer_(player, 2*bet);
+      unlock this;
+      lock this;
+      bet = 0;
+    } else {
+      // operator wins, bet transfered to pot
+      pot = pot + bet;
+      bet = 0;
+    }
+    state = 0;
+    unlock this;
+  }
+
+}
+
