@@ -14,7 +14,7 @@ This repository contains the material of the [Casino case study](https://verifyt
 * [supervisory] --    
 * [tlaplus]     -- Classical model-checking
 * [solc-verify]  -- Code-based Verification based on Verification Condition
-* [secc]     -- 
+* [secc]     -- Deductive Verification
 * [vercors]  -- Deductive Verification
 * [javabip]  -- 
 
