@@ -45,7 +45,6 @@ contract Casino {
     // Remove money from pot
 
     /// @notice postcondition pot == __verifier_old_uint(pot) - amount
-    /// @notice postcondition operator.balance == __verifier_old_uint(operator.balance) + amount
     /// @notice modifies pot
     /// @notice modifies address(this).balance
     /// @notice modifies operator.balance
@@ -68,7 +67,6 @@ contract Casino {
         state = State.GAME_AVAILABLE;
     }
 
-    //caller syntax: contractaddress.placeBet(HEADS).value(1000 Wei)
 
     // Player places a bet
     /// @notice modifies bet
@@ -89,7 +87,7 @@ contract Casino {
     }
 
 
-    /// @notice postcondition (pot == __verifier_old_uint(pot) - bet && player.balance == __verifier_old_uint(player.balance) + 2*bet) || pot == __verifier_old_uint(pot) + bet
+    /// @notice postcondition pot == __verifier_old_uint(pot) - __verifier_old_uint(bet) || pot == __verifier_old_uint(pot) + __verifier_old_uint(bet)
     /// @notice postcondition bet == 0
     /// @notice modifies pot
     /// @notice modifies bet
