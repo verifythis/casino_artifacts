@@ -86,20 +86,30 @@ contract Casino {
         guess = _guess;
     }
 
-
-    /// @notice postcondition pot == __verifier_old_uint(pot) - __verifier_old_uint(bet) || pot == __verifier_old_uint(pot) + __verifier_old_uint(bet)
+    /// @notice postcondition 
+    ///  !((number % 2 == 0 && guess == Coin.HEADS) 
+    ///  || (number % 2 != 0 && guess == Coin.TAILS))
+    ///  || (pot == __verifier_old_uint(pot) - __verifier_old_uint(bet))
+    /// @notice postcondition 
+    ///  !((number % 2 == 0 && guess == Coin.TAILS)
+    ///  || (number % 2 != 0 && guess == Coin.HEADS))
+    ///  || (pot == __verifier_old_uint(pot) + __verifier_old_uint(bet)
+    ///  && player.balance ==
+    ///   __verifier_old_uint(player.balance))
     /// @notice postcondition bet == 0
+    /// @notice postcondition state == State.IDLE
     /// @notice modifies pot
     /// @notice modifies bet
     /// @notice modifies player.balance
+    /// @notice modifies address(this).balance
     /// @notice modifies state
-    function decideBet(uint secretNumber) public {
+    function decideBet(uint number) public {
         require (state == State.BET_PLACED);
         require (msg.sender == operator);
         // left out so no undefined function call is needed
-        /* require (hashedNumber == keccak265(abi.encode(secretNumber))); */
+        /* require (hashedNumber == keccak265(abi.encode(number))); */
 
-        Coin secret = (secretNumber % 2 == 0)? Coin.HEADS : Coin.TAILS;
+        Coin secret = (number % 2 == 0)? Coin.HEADS : Coin.TAILS;
 
         if (secret == guess) {
             // player wins, gets back twice her bet
