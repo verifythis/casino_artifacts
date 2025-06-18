@@ -1,19 +1,29 @@
-------------------------------- MODULE NaiveCasino ----------------------------
+------------------------------ MODULE AtomicCasino ----------------------------
 (*****************************************************************************)
-(* This version of the Casino specification is an adaptation and correction  *)
-(* of the TLA+ specification available in the VerifyThis zenodo. All         *)
-(* operations are assumed to be performed atomically, including money        *)
-(* transfers. Observe that this does not correspond to the actual semantics  *)
-(* of Solidity smart contracts.                                              *)
+(* In this version of the Casino specification, all operations are assumed   *)
+(* to be performed atomically, including money transfers. Observe that this  *)
+(* is an idealization of the Solidity semantics, more faithful               *)
+(* representations of the smart contract are analyzed in the non-atomic      *)
+(* variants of the specification.                                            *)
+(*                                                                           *)
+(* The following properties are verified:                                    *)
+(* - type correctness, which includes the fact that no overspending occurs,  *)
+(* - the overall amount of Ether in the system remains constant, i.e., no    *)
+(*   money is created or lost,                                               *)
+(* - liveness: after a bet has been placed, the casino will return to the    *)
+(*   initial (idle) state.                                                   *)
+(* For applying the TLC model checker, verification is performed on the      *)
+(* MC_AtomicCasino specification, which extends this module but imposes      *)
+(* fixed, finite bounds on the state space.                                  *)
 (*****************************************************************************)
 EXTENDS Integers, TLC
 
 (*****************************************************************************)
 (* The participants in the system are the casino operator, the player, and   *)
-(* the casino itself. We choose to represent them as singleton agents        *)
+(* the casino itself. We choose to represent them as singleton agents since  *)
 (* there is no interference between different casinos or different players.  *)
 (* In particular, once a player has placed a bet, only that player can       *)
-(* interact from that point onwards. This helps make the state space         *)
+(* interact until a new game is set up. This helps make the state space      *)
 (* manageable for model checking. We also remove the `sender' argument from  *)
 (* operations because each operation can only be performed by one agent.     *)
 (*                                                                           *)
@@ -21,9 +31,9 @@ EXTENDS Integers, TLC
 (* description.                                                              *)
 (*                                                                           *)
 (* We do not model cryptographic hashing but store the secret and the guess  *)
-(* of the player when the game is created, respectively the bet is placed.   *)
-(* However, the player does not access the secret when placing the bet.      *)
-(* Alternatively, we could just use non-determinism to resolve the game.     *)
+(* of the player when the game is created, respectively when the bet is      *)
+(* placed. However, the player does not access the secret when placing the   *)
+(* bet. Alternatively, we could use non-determinism to resolve the game.     *)
 (*****************************************************************************)
 
 Ether == Nat   \* will be overridden for model checking
@@ -40,8 +50,13 @@ VARIABLES
     pot,           \* value of the pot
     bet,           \* player's bet value
     wallet,        \* amount of ether for each address
-    \* history variables representing the initial funds of the
-    \* operator and the player, used for checking that no money is lost
+    (************************************************************************)
+    (* History variables representing the initial funds of the              *)
+    (* operator and the player, used for checking that no money is lost.    *)
+    (* We make these variables rather than constant parameters of the       *)
+    (* specification so that TLC will check for all possible values         *)
+    (* rather than for fixed values per model.                              *)
+    (************************************************************************)
     operatorFunds,
     playerFunds
 
@@ -64,24 +79,21 @@ Init ==
     /\ pot = 0
     /\ bet = 0
     /\ operatorFunds \in Ether
-    /\ playerFunds \in Ether 
+    /\ playerFunds \in Ether
     /\ wallet = ("operator" :> operatorFunds) 
              @@ ("player" :> playerFunds) 
              @@ ("casino" :> 0)
 
 AddToPot(amount) ==
-    \* If the operator doesn't have sufficient funds, the operation must fail.
-    \* A failed operation corresponds to stuttering and doesn't need to be 
-    \* modeled explicitly.
-    /\ wallet["operator"] >= amount
+    /\ wallet["operator"] >= amount  \* implicit "payable" precondition of the smart contract
     /\ pot' = pot + amount
     /\ wallet' = [wallet EXCEPT !["operator"] = @ - amount,
                                 !["casino"] = @ + amount]
     /\ UNCHANGED <<state, secret, guess, bet, operatorFunds, playerFunds>>
 
 RemoveFromPot(amount) ==
-    /\ state # "BET_PLACED" \* no active bet ongoing
-    /\ pot >= amount \* fail if insufficient funds
+    /\ state # "BET_PLACED" \* precondition `noActiveBet` of smart contract
+    /\ wallet["casino"] >= amount \* fail if insufficient funds, due to failure of `transfer`
     /\ pot' = pot - amount
     /\ wallet' = [wallet EXCEPT !["operator"] = @ + amount,
                                 !["casino"] = @ - amount]
@@ -95,8 +107,8 @@ CreateGame(_secret) ==
 
 PlaceBet(amount, _guess) ==
     /\ state = "GAME_AVAILABLE"
-    /\ amount <= wallet["player"]
-    /\ amount <= pot
+    /\ amount <= wallet["player"]  \* implicit precondition "payable"
+    /\ amount <= pot  \* explicit precondition in smart contract
     /\ state' = "BET_PLACED"
     /\ guess' = _guess
     /\ bet' = amount
@@ -125,10 +137,10 @@ DecideBet ==
                    operatorFunds, playerFunds>>
 
 Next ==
-    \/ \E amount \in 0 .. wallet["operator"] : AddToPot(amount)
-    \/ \E amount \in 0 .. pot : RemoveFromPot(amount)
+    \/ \E amount \in Ether : AddToPot(amount)
+    \/ \E amount \in Ether : RemoveFromPot(amount)
     \/ \E _secret \in {Heads, Tails} : CreateGame(_secret)
-    \/ \E amount \in 0 .. pot, _guess \in {Heads, Tails} : PlaceBet(amount, _guess)
+    \/ \E amount \in Ether, _guess \in {Heads, Tails} : PlaceBet(amount, _guess)
     \/ DecideBet
 
 Fairness == WF_vars(DecideBet)
@@ -137,8 +149,9 @@ Spec == Init /\ [][Next]_vars /\ Fairness
 
 \* Invariant of the specification, beyond type correctness
 Inv == 
+    \* the ether held by the casino account equals the pot plus the player's bet
     /\ wallet["casino"] = pot + bet
-    \* the system does not lose money
+    \* the system does not create or lose money
     /\ wallet["operator"] + wallet["player"] + wallet["casino"] 
        = operatorFunds + playerFunds
 

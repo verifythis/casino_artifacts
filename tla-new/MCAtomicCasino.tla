@@ -1,10 +1,10 @@
------------------------------- MODULE MCNaiveCasino ---------------------------
+----------------------------- MODULE MCAtomicCasino ---------------------------
 (*****************************************************************************)
-(* Instance of NaiveCasino suitable for model checking by bounding the state *)
-(* space. The operator MCEther overrides Ether for model checking and MCSpec *)
-(* is used as the specification for model checking.                          *)
+(* Instance of AtomicCasino suitable for model checking by bounding the      *)
+(* state space. The operator MCEther overrides Ether for model checking and  *)
+(* MCSpec is used as the specification for model checking.                   *)
 (*****************************************************************************)
-EXTENDS NaiveCasino, TLC
+EXTENDS AtomicCasino
 
 CONSTANT MaxEther
 ASSUME MaxEther \in Nat

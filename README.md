@@ -3,7 +3,7 @@ Companion repository with the artifacts to the Casino case study
 
 **Working title:** From Model Checking to Deductive Verification: A Smart Contract as a Challenge for State-of-the Art Formal Specification and Verification Techniques
 
-**Authors:** Wolfgang Ahrendt, Jonas Becker-Kupczok, Simon Bliudze, Petra van den Bos, Marco Eilers, Gidon Ernst, Martin Fabian, Paula Herber, Marieke Huisman, Raúl E. Monti, 
+**Authors:** Wolfgang Ahrendt, Jonas Becker-Kupczok, Simon Bliudze, Petra van den Bos, Marco Eilers, Gidon Ernst, Martin Fabian, Paula Herber, Marieke Huisman, Stephan Merz, Raúl E. Monti, 
 Robert Rubbens, Larisa Safina, Jonas Schiffl, Alexander J. Summers, Mattias Ulbrich, Alexander Weigl
 
 ## Contents
@@ -13,6 +13,7 @@ This repository contains the material of the [Casino case study](https://verifyt
 * [uppaal]      -- Timed automata
 * [supervisory] --    
 * [tlaplus]     -- Classical model-checking
+* [tla-new]  -- TLA+ specifications and finite instances used for model checking
 * [solc-verify]  -- Code-based Verification based on Verification Condition
 * [secc]     -- Deductive Verification
 * [vercors]  -- Deductive Verification
