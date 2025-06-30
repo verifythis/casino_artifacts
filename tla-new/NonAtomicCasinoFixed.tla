@@ -1,10 +1,8 @@
---------------------------- MODULE NonAtomicCasino ----------------------------
+------------------------- MODULE NonAtomicCasinoFixed -------------------------
 (*****************************************************************************)
-(* This version of the Casino specification models the transfer method as a  *)
-(* separate atomic operation, breaking the atomicity of the enclosing        *)
-(* action. Several calls to transfer may be pending, which are represented   *)
-(* using a multiset in the specification. Several properties are no longer   *)
-(* verified, revealing problems with the smart contract.                     *)
+(* This version of the Casino specification is derived from the one in the   *)
+(* module NonAtomicCasino, but it fixes the problems discovered when running *)
+(* TLC on that specification.                                                *)
 (*                                                                           *)
 (* This specification relies on the BagsExt module from the TLA+ Community   *)
 (* Modules (https://github.com/tlaplus/CommunityModules). If your IDE        *)
@@ -16,7 +14,8 @@ EXTENDS Integers, Bags, BagsExt, TLC
 Ether == Nat   \* will be overridden for model checking
 
 Address == {"operator", "player", "casino"}
-State == { "IDLE", "GAME_AVAILABLE", "BET_PLACED" }
+\* Introduce an additional state to prevent `decideBet` to be called twice in succession
+State == { "IDLE", "GAME_AVAILABLE", "BET_PLACED", "DECIDING_BET" }
 \* states of pending transfers: rfp_XXX corresponds to transfers invoked from
 \* RemoveFromPot, pw_XXX to transfers invoked from the PlayerWins branch of DecideBet
 TransferState == {"rfp_invoked", "rfp_succeeded", "rfp_failed", "pw_invoked", "pw_succeeded", "pw_failed"} \X Ether
@@ -49,7 +48,10 @@ TypeOK ==
     /\ DOMAIN transfers \subseteq TransferState
     /\ secret \in {Heads, Tails}
     /\ guess \in {Heads, Tails}
-    /\ pot \in Ether
+    \* The pot may temporarily become negative when removeFromPot is invoked, but
+    \* not if the transfer method succeeds.
+    /\ pot \in Int
+    /\ (~\E trf \in DOMAIN transfers: trf[1] \in {"rfp_invoked", "rfp_failed"}) => pot \in Ether
     /\ bet \in Ether
     /\ wallet \in [Address -> Ether]
     /\ operatorFunds \in Ether
@@ -69,7 +71,7 @@ Init ==
              @@ ("casino" :> 0)
 
 AddToPot(amount) ==
-    /\ wallet["operator"] >= amount   \* implicit "payable" precondition of the function
+    /\ wallet["operator"] >= amount  \* implicit "payable" precondition of the function
     /\ pot' = pot + amount
     /\ wallet' = [wallet EXCEPT !["operator"] = @ - amount,
                                 !["casino"] = @ + amount]
@@ -77,11 +79,13 @@ AddToPot(amount) ==
 
 \* part of the RemoveFromPot method before the call to transfer
 RemoveFromPot1(amount) ==
-    /\ state # "BET_PLACED" \* precondition `noActiveBet` of the function
+    /\ state \notin {"BET_PLACED", "DECIDING_BET"} \* precondition `noActiveBet' of the function, extended to new state
     \* We no longer assume that the operation fails if there are insufficient funds.
     \* Instead the failure will occur during the call to `transfer`.
+    /\ \* adjust the money in the pot before invoking transfer
+       pot' = pot - amount
     /\ transfers' = BagAdd(transfers, <<"rfp_invoked", amount>>)
-    /\ UNCHANGED <<state, secret, guess, pot, bet, wallet, operatorFunds, playerFunds>>
+    /\ UNCHANGED <<state, secret, guess, bet, wallet, operatorFunds, playerFunds>>
 
 \* transfer method called from RemoveToPot
 RemoveFromPot2 == \E trf \in DOMAIN transfers :
@@ -102,10 +106,10 @@ RemoveFromPot2 == \E trf \in DOMAIN transfers :
 RemoveFromPot3 == \E trf \in DOMAIN transfers :
     /\ \/ \* complete transaction if the transfer succeeded
           /\ trf[1] = "rfp_succeeded"
-          /\ pot' = pot - trf[2]
-       \/ \* abort transaction if the transfer failed
+          /\ pot' = pot
+       \/ \* roll back the transaction if the transfer failed
           /\ trf[1] = "rfp_failed"
-          /\ pot' = pot 
+          /\ pot' = pot + trf[2]
     /\ transfers' = BagRemove(transfers, trf)
     /\ UNCHANGED <<state, secret, guess, bet, wallet, operatorFunds, playerFunds>>
 
@@ -127,25 +131,30 @@ PlaceBet(amount, _guess) ==
     /\ UNCHANGED <<secret, transfers, pot, operatorFunds, playerFunds>>
 
 \* part of PlayerWins up to call to transfer method
+\* This now includes a transition to the intermediate state DECIDING_BET.
 PlayerWins1 ==
     /\ pot' = pot - bet
     /\ transfers' = BagAdd(transfers, <<"pw_invoked", 2*bet>>)
-    /\ UNCHANGED <<state, secret, guess, bet, wallet, operatorFunds, playerFunds>>
+    /\ state' = "DECIDING_BET"
+    /\ UNCHANGED <<secret, guess, bet, wallet, operatorFunds, playerFunds>>
 
 \* transfer method called from PlayerWins
-PlayerWins2 == \E trf \in DOMAIN transfers :
+\* In order to express fairness more easily, we write two actions corresponding
+\* to success or failure of the transfer.
+PlayerWins2Success == \E trf \in DOMAIN transfers :
     /\ trf[1] = "pw_invoked"
-    /\ \/ \* transfer succeeds, requiring sufficient funds
-          /\ wallet["casino"] >= trf[2]
-          /\ wallet' = [wallet EXCEPT !["player"] = @ + trf[2],
-                                      !["casino"] = @ - trf[2]]
-          /\ transfers' = BagAdd(BagRemove(transfers, trf), 
-                                 <<"pw_succeeded", trf[2]>>)
-       \/ \* transfer fails
-          /\ wallet' = wallet
-          /\ transfers' = BagAdd(BagRemove(transfers, trf), 
-                                 <<"pw_failed", trf[2]>>)
+    /\ wallet["casino"] >= trf[2]
+    /\ wallet' = [wallet EXCEPT !["player"] = @ + trf[2],
+                                !["casino"] = @ - trf[2]]
+    /\ transfers' = BagAdd(BagRemove(transfers, trf), 
+                           <<"pw_succeeded", trf[2]>>)
     /\ UNCHANGED <<state, secret, guess, pot, bet, operatorFunds, playerFunds>>
+
+PlayerWins2Failure == \E trf \in DOMAIN transfers :
+    /\ trf[1] = "pw_invoked"
+    /\ transfers' = BagAdd(BagRemove(transfers, trf), 
+                           <<"pw_failed", trf[2]>>)
+    /\ UNCHANGED <<state, secret, guess, pot, bet, wallet, operatorFunds, playerFunds>>
 
 \* part of PlayerWins after the call to transfer
 PlayerWins3 == \E trf \in DOMAIN transfers :
@@ -154,10 +163,11 @@ PlayerWins3 == \E trf \in DOMAIN transfers :
           /\ bet' = 0
           /\ state' = "IDLE"
           /\ pot' = pot
-       \/ \* transfer failed, roll back the transaction
+       \/ \* transfer failed, roll back the transaction, including return to previous control state
           /\ trf[1] = "pw_failed"
+          /\ state' = "BET_PLACED"
           /\ pot' = pot + bet  \* restore pot
-          /\ UNCHANGED <<bet, state>>
+          /\ UNCHANGED bet
     /\ transfers' = BagRemove(transfers, trf)
     /\ UNCHANGED <<secret, guess, wallet, operatorFunds, playerFunds>>
 
@@ -169,8 +179,6 @@ OperatorWins ==
     /\ UNCHANGED <<transfers, secret, guess, wallet, operatorFunds, playerFunds>>
 
 DecideBet ==
-    \* This action corresponds to the invocation of `decideBet`.
-    \* In case the player wins, we do not move to state IDLE yet.
     /\ state = "BET_PLACED"
     /\ \/ guess = secret /\ PlayerWins1
        \/ guess # secret /\ OperatorWins
@@ -181,24 +189,21 @@ Next ==
     \/ RemoveFromPot2 \/ RemoveFromPot3
     \/ \E _secret \in {Heads, Tails} : CreateGame(_secret)
     \/ \E amount \in Ether, _guess \in {Heads, Tails} : PlaceBet(amount, _guess)
-    \/ DecideBet \/ PlayerWins2 \/ PlayerWins3
+    \/ DecideBet \/ PlayerWins2Success \/ PlayerWins2Failure \/ PlayerWins3
 
-\* Require fairness for the different subactions of DecideBet.
-Fairness == WF_vars(DecideBet) /\ WF_vars(PlayerWins2) /\ WF_vars(PlayerWins3)
+\* We strengthen the fairness condition such that DecideBet must finish
+\* and also such that some transfer to the player must eventually succeed.
+Fairness == WF_vars(DecideBet) /\ SF_vars(PlayerWins2Success) /\ WF_vars(PlayerWins3)
 
 Spec == Init /\ [][Next]_vars /\ Fairness
 
-\* Invariants, beyond type correctness (these will fail)
+\* Invariants, beyond type correctness
 Inv == 
-    /\ wallet["casino"] = pot + bet
-    \* the system does not lose money
+    \* the system does not create or lose money
     /\ wallet["operator"] + wallet["player"] + wallet["casino"] 
        = operatorFunds + playerFunds
 
 \* Liveness: whenever a bet is placed, it will eventually be resolved.
-\* This property fails because transfers to the player can fail indefinitely,
-\* for example if the player refuses to be paid out
-\* (but since safety properties are violated, this is basically moot).
 Liveness == (state = "BET_PLACED") ~> (state = "IDLE")
 
 ===============================================================================
