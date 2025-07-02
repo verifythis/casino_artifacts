@@ -1,34 +1,45 @@
-# TLA+ Solution for the Casino Challenge
+# A TLA+ Solution for the Casino Challenge
 
-This folder contains the solution to the [Casino challenge of VerifyThis](https://verifythis.github.io/casino/),
-showcasing the specification with [TLA+](). The files are licensed under BSD 3-clause (see `LICENSE`).
+This folder contains the [TLA+](https://foundation.tlapl.us) solution to the [Casino challenge of VerifyThis](https://verifythis.github.io/casino/). 
 
-## Description
+## Specification AtomicCasino
 
-The artifact consists the one TLA+ file `Casino.tla`, and the pretty-printed version `Casino.pdf`. 
+This specification models each function of the smart contract by a TLA+ action. For functions that call Solidity's transfer method for transferring Ether between accounts, the effect of transfer is included in the step representing the enclosing function. This corresponds to the simplifying assumption that transfer occurs as part of the atomic step of the function that it is called from. An attractive feature of this model is that in the case of failure of transfer, Solidity will abort the transaction corresponding to the enclosing method. Such an aborted transaction is represented as a stuttering transition in TLA+, which is always allowed. Therefore, only successful transactions need to be modeled explicitly.
 
-It first defines a logical model of blockchain contracts and and general state, specifically, the type of `address`es, and resource predicates for `account`s and `payment`s, and some functions that can be used to compute with these resources.
+Besides type correctness, an additional invariant asserting that no Ether is created or lost during system executions, and a liveness property asserting that once a bet has been placed, the bet will eventually be decided and the casino will revert to the idle state, are expressed as TLA+ formulas.
 
-Next, the Casino state is defined as a `struct casino`,
-which together with the address `self` of the corresponding smart contract
-satisfies the invariants expressed by predicate `game`.
+The MCAtomicCasino specification extends module AtomicCasino and allows the user to bound the maximum amount of Ether that is available, resulting in a finite state space, which is amenable to verification by model checking. The possible initial states are determined based on choosing initial funds for both the operator and the player such that the overall bound on the ether is not exceeded. Both invariants and the liveness property are successfully verified by TLC in a few seconds.
 
-The main steps of the game and the respective transitions are implemented by functions `init`, `add_to_pot`, `remove_from_pot`, `create_game`, `place_bet`, and `decide_bet`.
+## Specification NonAtomicCasino
 
-Function `sequential_game` models how the overall game is played out in terms of a loop that chooses the next actions nondeterministically. This outer loop also orchestrates the transfer of resources and makes explicit the decision of the operator to disclose the winning bet (assumption `secret :: low`).
+This specification models invocations of the transfer method as separate atomic actions. For example, the RemoveFromPot action is divided into three actions, the first one modeling the part of the method before the invocation of transfer, the second one the effect of the transfer method, and the third one the part of the RemoveFromPot action following the call to transfer. An invocation of transfer may succeed or fail; in particular, the account from which money is transferred must hold enough Ether for the transfer to succeed. If transfer fails, the enclosing transaction is rolled back. Pending calls to transfer are represented by the variable transfers of the TLA+ specification, which holds a bag (multiset) of ongoing transfer operations. The same properties as for the AtomicCasino specification are defined.
+
+The corresponding MCNonAtomicCasino specification again allows the specification to be analyzed using TLC for bounded state spaces. It reveals several issues with this specification:
+
+- Because intermediate states of methods are revealed when transfer is called, invariants may be temporarily violated. Notably, the typing invariant asserting that the value held in the pot does not exceed the maximum ether value fails when AddToPot is invoked while a transfer invoked from a preceding RemoveFromPot is in progress. A similar problem occurs with the invariant stating that the wallet of the casino holds the sum of the pot and the bet.
+
+- Although the above are warning signals indicating that the environment may observe casino states that do not correspond to the stated invariants, they may be considered as unimportant, and one may be tempted to repair the properties by weakening them appropriately during transient states. The invariant MCTypeOK is an attempt to do so, but checking this property reveals a more serious error due the pot holding a negative value for a certain interleaving.
+
+- Finally, the liveness property also fails due to an execution in which the attempt to transfer the payout to the player fails repeatedly. In particular, a non-cooperative player may block progress of the system by refusing to accept payments. However, given that the specification already violates essential safety property, this failure may be considered somewhat irrelevant.
+
+## Specification NonAtomicCasinoFixed
+
+Finally, NonAtomicCasinoFixed adjusts the implementation of the smart contract so that the previously detected problems are avoided. For example, the adjustment of the money in the pot takes place before the invocation of transfer. The fairness hypothesis is strengthened by assuming that repeated attempts to transfer the payout to the player must eventually succeed. (In particular, this rules out "denial of service" attacks by the player against the casino.) Properties analogous to the ones asserted for the preceding specifications are defined, however the simple relationship between the money held by the casino and the local variables pot and bet no longer holds due to asynchronous modifications. Moreover, the value of pot may temporarily become negative when RemoveFromPot has been called (but not if the corresponding transfer succeeds).
+
+As before, the MCNonAtomicCasinoFixed is the version to be used for analyzing the specification over bounded state spaces. In addition to limiting the amount of available Ether, it also includes a state constraint bounding the number of ongoing calls to transfer. All asserted properties are verified. Verification takes about 5 minutes on a M3Pro MacBook Pro for a bound of 5 on the amount of Ether and with at most 3 pending transfer operations.
 
 ## Repeat the Verification
 
-### Requirements
+The preferred IDE for using TLA+ is the Visual Studio Code Extension, which can be downloaded from the VSCode marketplace for Linux, MacOS, and Windows. From there, the TLC model checker can be invoked from the MC*.tla modules.
 
-Dependencies of TLA+. There are two environments for writing TLA+ specifications. You use the Eclipse-based IDE ([The Toolbox](https://lamport.azurewebsites.net/tla/toolbox.html)), or the newer [VSCode environment](https://marketplace.visualstudio.com/items?itemName=alygin.vscode-tlaplus) (building upon language server protocol).
+Alternatively, the TLA+ tools can be downloaded from [GitHub](https://github.com/tlaplus/tlaplus/releases). Download tla2tools.jar and run TLC using
 
-In both cases, a recent Java is required.
+  java -cp tla2tools.jar tlc2.TLC MCAtomicCasino   (and similar for the other MC* modules)
 
+The non-atomic versions of the Casino specifications depend on the module BagsExt.tla from the [TLA+ Community Modules](https://github.com/tlaplus/CommunityModules), which itself depends on Folds.tla. Although the Community Modules are bundled with the VS Code Extension, both modules necessary for this case study are included here in order to avoid external dependencies and simplify running TLC from the command line.
 
-### Download and compile SecC (requires Java):
+Verification times range from a few seconds for checking the atomic version or for finding errors in the non-atomic specification to several minutes for checking the fixed non-atomic specification, for the model sizes specified in the configuration files in this directory.
 
-    git clone https://bitbucket.org/covern/secc/
-    cd secc
-    make      # takes about one minute
-    make test # optional, takes about two minutes
+## Going further
+
+Beyond model checking, TLA+ supports interactive theorem proving based on the [TLA+ Proof System](https://proofs.tlapl.us/). TLAPS could be used to prove the correctness of the properties asserted for the atomic specification or the fixed non-atomic specification.
