@@ -1,0 +1,1224 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<Module xmlns="http://waters.sourceforge.net/xsd/module" xmlns:B="http://waters.sourceforge.net/xsd/base" Name="Casino-nonblocking">
+<EventDeclList>
+<EventDecl Kind="CONTROLLABLE" Name="AP"/>
+<EventDecl Kind="CONTROLLABLE" Name="RP"/>
+<EventDecl Kind="PROPOSITION" Name=":accepting"/>
+<EventDecl Kind="CONTROLLABLE" Name="CG"/>
+<EventDecl Kind="CONTROLLABLE" Name="PB"/>
+<EventDecl Kind="CONTROLLABLE" Name="PBH"/>
+<EventDecl Kind="CONTROLLABLE" Name="PBT"/>
+<EventDecl Kind="CONTROLLABLE" Name="DB"/>
+<EventDecl Kind="CONTROLLABLE" Name="PW"/>
+<EventDecl Kind="CONTROLLABLE" Name="OW"/>
+<EventDecl Kind="CONTROLLABLE" Name="TP"/>
+<EventDecl Kind="CONTROLLABLE" Name="hash"/>
+<EventDecl Kind="CONTROLLABLE" Name="reveal"/>
+<EventDecl Kind="CONTROLLABLE" Name="TR"/>
+<EventDecl Kind="CONTROLLABLE" Name="DBD"/>
+<EventDecl Kind="CONTROLLABLE" Name="CGD"/>
+<EventDecl Kind="CONTROLLABLE" Name="PBD"/>
+<EventDecl Kind="CONTROLLABLE" Name="DBR"/>
+<EventDecl Kind="CONTROLLABLE" Name="PWR"/>
+<EventDecl Kind="CONTROLLABLE" Name="WD"/>
+</EventDeclList>
+<ComponentList>
+<SimpleComponent Kind="PLANT" Name="Casino">
+<Graph>
+<NodeList>
+<SimpleNode Initial="true" Name="I">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="448" Y="288"/>
+</PointGeometry>
+<InitialArrowGeometry>
+<Point X="2" Y="32"/>
+</InitialArrowGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-7" Y="-7"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="GA">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="400" Y="368"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-16" Y="-8"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="BP">
+<PointGeometry>
+<Point X="512" Y="368"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-15" Y="-8"/>
+</LabelGeometry>
+</SimpleNode>
+</NodeList>
+<EdgeList>
+<Edge Source="I" Target="I">
+<LabelBlock>
+<SimpleIdentifier Name="AP"/>
+<LabelGeometry Anchor="NW">
+<Point X="5" Y="-12"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="479" Y="283"/>
+</SplineGeometry>
+</Edge>
+<Edge Source="BP" Target="BP">
+<LabelBlock>
+<SimpleIdentifier Name="AP"/>
+<LabelGeometry Anchor="NW">
+<Point X="-14" Y="-21"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="516" Y="337"/>
+</SplineGeometry>
+</Edge>
+<Edge Source="I" Target="I">
+<LabelBlock>
+<SimpleIdentifier Name="CG"/>
+<LabelGeometry Anchor="NW">
+<Point X="-17" Y="-24"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="452" Y="258"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="448" Y="288"/>
+</EndPointGeometry>
+</Edge>
+<Edge Source="GA" Target="GA">
+<LabelBlock>
+<SimpleIdentifier Name="PB"/>
+<LabelGeometry Anchor="NW">
+<Point X="-42" Y="-12"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="371" Y="377"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="400" Y="368"/>
+</EndPointGeometry>
+</Edge>
+<Edge Source="BP" Target="I">
+<LabelBlock>
+<SimpleIdentifier Name="DBD"/>
+<LabelGeometry Anchor="NW">
+<Point X="-4" Y="-26"/>
+</LabelGeometry>
+</LabelBlock>
+<EndPointGeometry>
+<Point X="448" Y="288"/>
+</EndPointGeometry>
+</Edge>
+<Edge Source="GA" Target="BP">
+<LabelBlock>
+<SimpleIdentifier Name="PBD"/>
+<LabelGeometry Anchor="NW">
+<Point X="-29" Y="5"/>
+</LabelGeometry>
+</LabelBlock>
+</Edge>
+<Edge Source="GA" Target="GA">
+<LabelBlock>
+<SimpleIdentifier Name="AP"/>
+<LabelGeometry Anchor="NW">
+<Point X="-10" Y="5"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="399" Y="399"/>
+</SplineGeometry>
+</Edge>
+<Edge Source="GA" Target="GA">
+<LabelBlock>
+<SimpleIdentifier Name="RP"/>
+<LabelGeometry Anchor="NW">
+<Point X="-18" Y="-22"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="386" Y="341"/>
+</SplineGeometry>
+</Edge>
+<Edge Source="I" Target="I">
+<LabelBlock>
+<SimpleIdentifier Name="RP"/>
+<LabelGeometry Anchor="NW">
+<Point X="-23" Y="-24"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="419" Y="277"/>
+</SplineGeometry>
+</Edge>
+<Edge Source="BP" Target="BP">
+<LabelBlock>
+<SimpleIdentifier Name="DB"/>
+<LabelGeometry Anchor="NW">
+<Point X="-11" Y="6"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="515" Y="397"/>
+</SplineGeometry>
+</Edge>
+<Edge Source="I" Target="GA">
+<LabelBlock>
+<SimpleIdentifier Name="CGD"/>
+<LabelGeometry Anchor="NW">
+<Point X="-46" Y="-30"/>
+</LabelGeometry>
+</LabelBlock>
+</Edge>
+<Edge Source="BP" Target="BP">
+<LabelBlock>
+<SimpleIdentifier Name="WD"/>
+</LabelBlock>
+<SplineGeometry>
+<Point X="548" Y="370"/>
+</SplineGeometry>
+</Edge>
+<Edge Source="GA" Target="GA">
+<LabelBlock>
+<SimpleIdentifier Name="WD"/>
+</LabelBlock>
+<SplineGeometry>
+<Point X="427" Y="386"/>
+</SplineGeometry>
+</Edge>
+<Edge Source="I" Target="I">
+<LabelBlock>
+<SimpleIdentifier Name="WD"/>
+<LabelGeometry Anchor="NW">
+<Point X="5" Y="-20"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="474" Y="263"/>
+</SplineGeometry>
+</Edge>
+</EdgeList>
+</Graph>
+</SimpleComponent>
+<SimpleComponent Kind="PLANT" Name="withdraw">
+<Graph>
+<NodeList>
+<SimpleNode Initial="true" Name="PW0">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="-1280" Y="-608"/>
+</PointGeometry>
+<InitialArrowGeometry>
+<Point X="-88" Y="2"/>
+</InitialArrowGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-14" Y="-10"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="PW1">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="-1072" Y="-608"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-13" Y="-17"/>
+</LabelGeometry>
+</SimpleNode>
+</NodeList>
+<EdgeList>
+<Edge Source="PW0" Target="PW1">
+<LabelBlock>
+<SimpleIdentifier Name="WD"/>
+<LabelGeometry Anchor="NW">
+<Point X="-14" Y="-27"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="-1174" Y="-662"/>
+</SplineGeometry>
+</Edge>
+<Edge Source="PW1" Target="PW0">
+<LabelBlock>
+<SimpleIdentifier Name="TP"/>
+<LabelGeometry Anchor="NW">
+<Point X="-12" Y="5"/>
+</LabelGeometry>
+</LabelBlock>
+<EndPointGeometry>
+<Point X="-1280" Y="-608"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Actions>
+<BinaryExpression Operator="=" Text="TP = 0">
+<SimpleIdentifier Name="TP"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+<BinaryExpression Operator="=" Text="WDR =1">
+<SimpleIdentifier Name="WDR"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="-22" Y="18"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="PW1" Target="PW0">
+<LabelBlock>
+<SimpleIdentifier Name="TP"/>
+<LabelGeometry Anchor="NW">
+<Point X="-11" Y="-22"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="-1179" Y="-530"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="-1280" Y="-608"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Actions>
+<BinaryExpression Operator="=" Text="TP = 1">
+<SimpleIdentifier Name="TP"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="-19" Y="3"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+</EdgeList>
+</Graph>
+</SimpleComponent>
+<VariableComponent Name="WDR">
+<VariableRange><BinaryExpression Operator="..">
+<IntConstant Value="0"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="==" Text="WDR == 0">
+<SimpleIdentifier Name="WDR"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+</VariableInitial>
+</VariableComponent>
+<SimpleComponent Kind="PLANT" Name="playerWins">
+<Graph>
+<NodeList>
+<SimpleNode Initial="true" Name="S0">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="144" Y="128"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="0" Y="10"/>
+</LabelGeometry>
+</SimpleNode>
+</NodeList>
+<EdgeList>
+<Edge Source="S0" Target="S0">
+<LabelBlock>
+<SimpleIdentifier Name="PW"/>
+<LabelGeometry Anchor="NW">
+<Point X="7" Y="-8"/>
+</LabelGeometry>
+</LabelBlock>
+<EndPointGeometry>
+<Point X="144" Y="128"/>
+</EndPointGeometry>
+</Edge>
+</EdgeList>
+</Graph>
+</SimpleComponent>
+<VariableComponent Name="counter">
+<VariableRange><BinaryExpression Operator="..">
+<IntConstant Value="0"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="==" Text="counter ==0">
+<SimpleIdentifier Name="counter"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+</VariableInitial>
+</VariableComponent>
+<SimpleComponent Kind="PLANT" Name="operatorWins">
+<Graph>
+<NodeList>
+<SimpleNode Initial="true" Name="OW0">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="-944" Y="-384"/>
+</PointGeometry>
+<InitialArrowGeometry>
+<Point X="-2" Y="-87"/>
+</InitialArrowGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-17" Y="-7"/>
+</LabelGeometry>
+</SimpleNode>
+</NodeList>
+<EdgeList>
+<Edge Source="OW0" Target="OW0">
+<LabelBlock>
+<SimpleIdentifier Name="OW"/>
+<LabelGeometry Anchor="NW">
+<Point X="19" Y="-21"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="-944" Y="-349"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="-944" Y="-384"/>
+</EndPointGeometry>
+</Edge>
+</EdgeList>
+</Graph>
+</SimpleComponent>
+<VariableComponent Name="c">
+<VariableRange><EnumSetExpression Text="[H,T]">
+<SimpleIdentifier Name="H"/>
+<SimpleIdentifier Name="T"/>
+</EnumSetExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="|" Text="c == H | c==T">
+<BinaryExpression Operator="==">
+<SimpleIdentifier Name="c"/>
+<SimpleIdentifier Name="H"/>
+</BinaryExpression>
+<BinaryExpression Operator="==">
+<SimpleIdentifier Name="c"/>
+<SimpleIdentifier Name="T"/>
+</BinaryExpression>
+</BinaryExpression>
+</VariableInitial>
+</VariableComponent>
+<VariableComponent Name="sc">
+<VariableRange><EnumSetExpression Text="[H,T]">
+<SimpleIdentifier Name="H"/>
+<SimpleIdentifier Name="T"/>
+</EnumSetExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="|" Text="sc == H | sc==T">
+<BinaryExpression Operator="==">
+<SimpleIdentifier Name="sc"/>
+<SimpleIdentifier Name="H"/>
+</BinaryExpression>
+<BinaryExpression Operator="==">
+<SimpleIdentifier Name="sc"/>
+<SimpleIdentifier Name="T"/>
+</BinaryExpression>
+</BinaryExpression>
+</VariableInitial>
+</VariableComponent>
+<VariableComponent Name="S">
+<VariableRange><EnumSetExpression>
+<SimpleIdentifier Name="P"/>
+<SimpleIdentifier Name="O"/>
+</EnumSetExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="==" Text="S == O">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="O"/>
+</BinaryExpression>
+</VariableInitial>
+</VariableComponent>
+<SimpleComponent Kind="PLANT" Name="placeBet">
+<Graph Deterministic="false">
+<NodeList>
+<SimpleNode Initial="true" Name="PB0">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="208" Y="304"/>
+</PointGeometry>
+<InitialArrowGeometry>
+<Point X="-142" Y="0"/>
+</InitialArrowGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-13" Y="-7"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="PB1">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="304" Y="336"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-11" Y="-7"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="PB2">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="304" Y="256"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-12" Y="-7"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="S0">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="208" Y="336"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="209" Y="-53"/>
+</LabelGeometry>
+</SimpleNode>
+</NodeList>
+<EdgeList>
+<Edge Source="PB0" Target="PB1">
+<LabelBlock>
+<SimpleIdentifier Name="PB"/>
+<LabelGeometry Anchor="NW">
+<Point X="-17" Y="7"/>
+</LabelGeometry>
+</LabelBlock>
+<GuardActionBlock>
+<Actions>
+<BinaryExpression Operator="=" Text="S = P">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="P"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="-20" Y="22"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="PB1" Target="PB2">
+<LabelBlock>
+<SimpleIdentifier Name="PBH"/>
+<LabelGeometry Anchor="NW">
+<Point X="-77" Y="-32"/>
+</LabelGeometry>
+</LabelBlock>
+<EndPointGeometry>
+<Point X="304" Y="256"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="!=">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="O"/>
+</BinaryExpression>
+</Guards>
+<Actions>
+<BinaryExpression Operator="=" Text="c = H">
+<SimpleIdentifier Name="c"/>
+<SimpleIdentifier Name="H"/>
+</BinaryExpression>
+<BinaryExpression Operator="=" Text="S = O">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="O"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="-84" Y="-15"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="PB1" Target="PB2">
+<LabelBlock>
+<SimpleIdentifier Name="PBT"/>
+<LabelGeometry Anchor="NW">
+<Point X="8" Y="-28"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="317" Y="296"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="304" Y="256"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="!=">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="O"/>
+</BinaryExpression>
+</Guards>
+<Actions>
+<BinaryExpression Operator="=" Text="c = T">
+<SimpleIdentifier Name="c"/>
+<SimpleIdentifier Name="T"/>
+</BinaryExpression>
+<BinaryExpression Operator="=" Text="S = O">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="O"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="8" Y="-11"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="PB2" Target="PB0">
+<LabelBlock>
+<SimpleIdentifier Name="PBD"/>
+<LabelGeometry Anchor="NW">
+<Point X="-70" Y="32"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="229" Y="263"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="208" Y="304"/>
+</EndPointGeometry>
+</Edge>
+</EdgeList>
+</Graph>
+</SimpleComponent>
+<SimpleComponent Kind="PLANT" Name="decideBet">
+<Graph Deterministic="false">
+<NodeList>
+<SimpleNode Initial="true" Name="DB0">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="-272" Y="240"/>
+</PointGeometry>
+<InitialArrowGeometry>
+<Point X="-131" Y="-2"/>
+</InitialArrowGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-14" Y="-6"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="DB1">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="-32" Y="336"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-13" Y="-9"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="DB2">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="-32" Y="240"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-14" Y="-6"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="DB3">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="-128" Y="160"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-14" Y="-6"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="DB4">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="-144" Y="240"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-14" Y="-8"/>
+</LabelGeometry>
+</SimpleNode>
+</NodeList>
+<EdgeList>
+<Edge Source="DB2" Target="DB4">
+<LabelBlock>
+<SimpleIdentifier Name="OW"/>
+<LabelGeometry Anchor="NW">
+<Point X="-21" Y="-22"/>
+</LabelGeometry>
+</LabelBlock>
+<StartPointGeometry>
+<Point X="-32" Y="240"/>
+</StartPointGeometry>
+<EndPointGeometry>
+<Point X="-144" Y="240"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="!=" Text="c != sc">
+<SimpleIdentifier Name="c"/>
+<SimpleIdentifier Name="sc"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="-36" Y="5"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="DB0" Target="DB1">
+<LabelBlock>
+<SimpleIdentifier Name="DB"/>
+<LabelGeometry Anchor="NW">
+<Point X="-80" Y="-42"/>
+</LabelGeometry>
+</LabelBlock>
+<StartPointGeometry>
+<Point X="-272" Y="240"/>
+</StartPointGeometry>
+<SplineGeometry>
+<Point X="-196" Y="332"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="-32" Y="336"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="S== O">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="O"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="-83" Y="-21"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="DB1" Target="DB2">
+<LabelBlock>
+<SimpleIdentifier Name="reveal"/>
+<LabelGeometry Anchor="NW">
+<Point X="5" Y="-23"/>
+</LabelGeometry>
+</LabelBlock>
+<EndPointGeometry>
+<Point X="-32" Y="240"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="HN == E">
+<SimpleIdentifier Name="HN"/>
+<SimpleIdentifier Name="E"/>
+</BinaryExpression>
+</Guards>
+<Actions>
+<BinaryExpression Operator="=" Text="sc = H">
+<SimpleIdentifier Name="sc"/>
+<SimpleIdentifier Name="H"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="7" Y="-2"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="DB1" Target="DB2">
+<LabelBlock>
+<SimpleIdentifier Name="reveal"/>
+<LabelGeometry Anchor="NW">
+<Point X="-77" Y="-16"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="-57" Y="287"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="-32" Y="240"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="HN == Od">
+<SimpleIdentifier Name="HN"/>
+<SimpleIdentifier Name="Od"/>
+</BinaryExpression>
+</Guards>
+<Actions>
+<BinaryExpression Operator="=" Text="sc = T">
+<SimpleIdentifier Name="sc"/>
+<SimpleIdentifier Name="T"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="-86" Y="5"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="DB2" Target="DB3">
+<LabelBlock>
+<SimpleIdentifier Name="PW"/>
+<LabelGeometry Anchor="NW">
+<Point X="-13" Y="-43"/>
+</LabelGeometry>
+</LabelBlock>
+<StartPointGeometry>
+<Point X="-32" Y="240"/>
+</StartPointGeometry>
+<EndPointGeometry>
+<Point X="-128" Y="160"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="c == sc">
+<SimpleIdentifier Name="c"/>
+<SimpleIdentifier Name="sc"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="-5" Y="-28"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="DB3" Target="DB0">
+<LabelBlock>
+<SimpleIdentifier Name="DBD"/>
+<LabelGeometry Anchor="NW">
+<Point X="10" Y="-12"/>
+</LabelGeometry>
+</LabelBlock>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="PWR == 0">
+<SimpleIdentifier Name="PWR"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="6" Y="5"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="DB3" Target="DB0">
+<LabelBlock>
+<SimpleIdentifier Name="DBR"/>
+<LabelGeometry Anchor="NW">
+<Point X="-44" Y="-11"/>
+</LabelGeometry>
+</LabelBlock>
+<StartPointGeometry>
+<Point X="-128" Y="160"/>
+</StartPointGeometry>
+<SplineGeometry>
+<Point X="-224" Y="163"/>
+</SplineGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="PWR == 1">
+<SimpleIdentifier Name="PWR"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="-90" Y="12"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="DB4" Target="DB0">
+<LabelBlock>
+<SimpleIdentifier Name="DBD"/>
+<LabelGeometry Anchor="NW">
+<Point X="-21" Y="5"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="-206" Y="275"/>
+</SplineGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="OWR == 0">
+<SimpleIdentifier Name="OWR"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="-20" Y="19"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="DB4" Target="DB0">
+<LabelBlock>
+<SimpleIdentifier Name="DBR"/>
+<LabelGeometry Anchor="NW">
+<Point X="-12" Y="-23"/>
+</LabelGeometry>
+</LabelBlock>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="OWR == 1">
+<SimpleIdentifier Name="OWR"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="-30" Y="2"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+</EdgeList>
+</Graph>
+</SimpleComponent>
+<VariableComponent Name="OWR">
+<VariableRange><BinaryExpression Operator="..">
+<IntConstant Value="0"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="==" Text="OWR == 0">
+<SimpleIdentifier Name="OWR"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+</VariableInitial>
+</VariableComponent>
+<VariableComponent Name="PWR">
+<VariableRange><BinaryExpression Operator="..">
+<IntConstant Value="0"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="==" Text="PWR == 0">
+<SimpleIdentifier Name="PWR"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+</VariableInitial>
+</VariableComponent>
+<SimpleComponent Kind="PLANT" Name="removeFromPot">
+<Graph>
+<NodeList>
+<SimpleNode Initial="true" Name="RP0">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="128" Y="384"/>
+</PointGeometry>
+<InitialArrowGeometry>
+<Point X="-141" Y="-1"/>
+</InitialArrowGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-15" Y="-9"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="RP1">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="240" Y="384"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-10" Y="-9"/>
+</LabelGeometry>
+</SimpleNode>
+</NodeList>
+<EdgeList>
+<Edge Source="RP1" Target="RP0">
+<LabelBlock>
+<SimpleIdentifier Name="TR"/>
+<LabelGeometry Anchor="NW">
+<Point X="-15" Y="-21"/>
+</LabelGeometry>
+</LabelBlock>
+<StartPointGeometry>
+<Point X="240" Y="384"/>
+</StartPointGeometry>
+<EndPointGeometry>
+<Point X="128" Y="384"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Actions>
+<BinaryExpression Operator="=" Text="TO = 0">
+<SimpleIdentifier Name="TO"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="-22" Y="7"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="RP0" Target="RP1">
+<LabelBlock>
+<SimpleIdentifier Name="RP"/>
+<LabelGeometry Anchor="NW">
+<Point X="-17" Y="-40"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="184" Y="356"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="240" Y="384"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="S== O">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="O"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="-21" Y="-22"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="RP1" Target="RP0">
+<LabelBlock>
+<SimpleIdentifier Name="TR"/>
+<LabelGeometry Anchor="NW">
+<Point X="-15" Y="6"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="183" Y="417"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="128" Y="384"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Actions>
+<BinaryExpression Operator="=" Text="TO = 1">
+<SimpleIdentifier Name="TO"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="-22" Y="22"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+</EdgeList>
+</Graph>
+</SimpleComponent>
+<VariableComponent Name="TP">
+<VariableRange><BinaryExpression Operator="..">
+<IntConstant Value="0"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="==" Text="TP == 0">
+<SimpleIdentifier Name="TP"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+</VariableInitial>
+<VariableMarking>
+<SimpleIdentifier Name=":accepting"/>
+<IntConstant Value="1"/>
+</VariableMarking>
+</VariableComponent>
+<VariableComponent Name="TO">
+<VariableRange><BinaryExpression Operator="..">
+<IntConstant Value="0"/>
+<IntConstant Value="1"/>
+</BinaryExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="==" Text="TO == 0">
+<SimpleIdentifier Name="TO"/>
+<IntConstant Value="0"/>
+</BinaryExpression>
+</VariableInitial>
+<VariableMarking>
+<SimpleIdentifier Name=":accepting"/>
+<IntConstant Value="1"/>
+</VariableMarking>
+</VariableComponent>
+<VariableComponent Name="HN">
+<VariableRange><EnumSetExpression Text="[E,Od]">
+<SimpleIdentifier Name="E"/>
+<SimpleIdentifier Name="Od"/>
+</EnumSetExpression>
+</VariableRange>
+<VariableInitial><BinaryExpression Operator="|" Text="HN== E | HN==Od">
+<BinaryExpression Operator="==">
+<SimpleIdentifier Name="HN"/>
+<SimpleIdentifier Name="E"/>
+</BinaryExpression>
+<BinaryExpression Operator="==">
+<SimpleIdentifier Name="HN"/>
+<SimpleIdentifier Name="Od"/>
+</BinaryExpression>
+</BinaryExpression>
+</VariableInitial>
+</VariableComponent>
+<SimpleComponent Kind="PLANT" Name="createGame">
+<Graph>
+<NodeList>
+<SimpleNode Initial="true" Name="CG0">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="208" Y="384"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-16" Y="-8"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="CG1">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="336" Y="384"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-12" Y="-9"/>
+</LabelGeometry>
+</SimpleNode>
+<SimpleNode Name="CG2">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="272" Y="304"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="-15" Y="-6"/>
+</LabelGeometry>
+</SimpleNode>
+</NodeList>
+<EdgeList>
+<Edge Source="CG0" Target="CG1">
+<LabelBlock>
+<SimpleIdentifier Name="CG"/>
+<LabelGeometry Anchor="NW">
+<Point X="-18" Y="9"/>
+</LabelGeometry>
+</LabelBlock>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==" Text="S== O">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="O"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="-19" Y="23"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="CG1" Target="CG2">
+<LabelBlock>
+<SimpleIdentifier Name="hash"/>
+<LabelGeometry Anchor="NW">
+<Point X="-5" Y="-29"/>
+</LabelGeometry>
+</LabelBlock>
+<SplineGeometry>
+<Point X="311" Y="336"/>
+</SplineGeometry>
+<EndPointGeometry>
+<Point X="272" Y="304"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Actions>
+<BinaryExpression Operator="=" Text="HN = Od">
+<SimpleIdentifier Name="HN"/>
+<SimpleIdentifier Name="Od"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="7" Y="-13"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="CG1" Target="CG2">
+<LabelBlock>
+<SimpleIdentifier Name="hash"/>
+<LabelGeometry Anchor="NW">
+<Point X="-44" Y="-8"/>
+</LabelGeometry>
+</LabelBlock>
+<EndPointGeometry>
+<Point X="272" Y="304"/>
+</EndPointGeometry>
+<GuardActionBlock>
+<Actions>
+<BinaryExpression Operator="=" Text="HN = E">
+<SimpleIdentifier Name="HN"/>
+<SimpleIdentifier Name="E"/>
+</BinaryExpression>
+</Actions>
+<LabelGeometry Anchor="NW">
+<Point X="-51" Y="7"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+<Edge Source="CG2" Target="CG0">
+<LabelBlock>
+<SimpleIdentifier Name="CGD"/>
+<LabelGeometry Anchor="NW">
+<Point X="-57" Y="-24"/>
+</LabelGeometry>
+</LabelBlock>
+</Edge>
+</EdgeList>
+</Graph>
+</SimpleComponent>
+<SimpleComponent Kind="PLANT" Name="addToPot">
+<Graph>
+<NodeList>
+<SimpleNode Initial="true" Name="S0">
+<EventList>
+<SimpleIdentifier Name=":accepting"/>
+</EventList>
+<PointGeometry>
+<Point X="144" Y="192"/>
+</PointGeometry>
+<LabelGeometry Anchor="NW">
+<Point X="0" Y="10"/>
+</LabelGeometry>
+</SimpleNode>
+</NodeList>
+<EdgeList>
+<Edge Source="S0" Target="S0">
+<LabelBlock>
+<SimpleIdentifier Name="AP"/>
+</LabelBlock>
+<GuardActionBlock>
+<Guards>
+<BinaryExpression Operator="==">
+<SimpleIdentifier Name="S"/>
+<SimpleIdentifier Name="O"/>
+</BinaryExpression>
+</Guards>
+<LabelGeometry Anchor="NW">
+<Point X="0" Y="20"/>
+</LabelGeometry>
+</GuardActionBlock>
+</Edge>
+</EdgeList>
+</Graph>
+</SimpleComponent>
+</ComponentList>
+</Module>
