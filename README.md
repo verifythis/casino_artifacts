@@ -11,13 +11,12 @@ Robert Rubbens, Larisa Safina, Jonas Schiffl, Alexander J. Summers, Mattias Ulbr
 This repository contains the material of the [Casino case study](https://verifythis.github.io/02casino/). In this paper we discuss several specification solutions. In particular you find the following solutions:
 
 * [uppaal]      -- Timed automata
-* [supervisory] --    
-* [tlaplus]     -- Classical model-checking
-* [tla-new]  -- TLA+ specifications and finite instances used for model checking
-* [solc-verify]  -- Code-based Verification based on Verification Condition
-* [secc]     -- Deductive Verification
-* [vercors]  -- Deductive Verification
-* [javabip]  -- 
+* [supervisory] -- Nonblocking verification
+* [tlaplus]  -- State machine specification with model checking
+* [solc-verify]  -- Source-level deductive verification
+* [secc]     -- Deductive verification
+* [vercors]  -- Deductive verification
+* [javabip]  -- Deductive verification of component-based systems
 * [2vyper] -- Deductive verification with resource-based specifications
 
 
