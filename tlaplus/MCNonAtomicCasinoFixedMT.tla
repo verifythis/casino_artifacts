@@ -1,10 +1,10 @@
------------------------- MODULE MCNonAtomicCasinoFixed ------------------------
+----------------------- MODULE MCNonAtomicCasinoFixedMT -----------------------
 (*****************************************************************************)
-(* Instance of NonAtomicCasinoFixed suitable for model checking by bounding  *)
+(* Instance of NonAtomicCasinoFixedMT suitable for model checking by bounding*)
 (* the state space. We also bound the number of pending calls to transfer    *)
-(* from `removeFromPot` using the bound MaxTransfers.                        *)
+(* from `removeFromPot` using the parameter MaxTransfers.                    *)
 (*****************************************************************************)
-EXTENDS NonAtomicCasinoFixed
+EXTENDS NonAtomicCasinoFixedMT
 
 CONSTANT MaxEther, MaxTransfers
 ASSUME MaxEther \in Nat /\ MaxTransfers \in Nat
@@ -22,5 +22,14 @@ MCInit == \E of, pf \in MCEther :
 
 MCSpec == MCInit /\ [][Next]_vars /\ Fairness
 
-StateConstraint == Len(transfers) <= MaxTransfers
+\* Count the number of pending transfers invoked from `removeFromPot`, 
+\* including the multiplicity of bag elements.
+CountRFPTransfers ==
+    MapThenFoldBag(LAMBDA x,y : x+y,
+                   0,
+                   LAMBDA trf: IF trf.op \in {"TransferRFP", "SuccessTransferRFP", "FailureTransferRFP"}
+                               THEN 1 ELSE 0,
+                   LAMBDA B : CHOOSE x \in DOMAIN B : TRUE,
+                   transfers)
+StateConstraint == CountRFPTransfers <= MaxTransfers
 ===============================================================================

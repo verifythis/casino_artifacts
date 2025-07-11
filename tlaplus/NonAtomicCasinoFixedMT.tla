@@ -1,17 +1,21 @@
------------------------- MODULE NonAtomicCasinoFixed --------------------------
+------------------------- MODULE NonAtomicCasinoFixedMT -------------------------
 (*****************************************************************************)
-(* This version of the Casino specification models the transfer method as a  *)
-(* separate atomic operation, breaking the atomicity of the enclosing        *)
-(* action. Several calls to transfer may be pending, which are represented   *)
-(* using a stack. The specification fixes the problems discovered with the   *)
-(* NonAtomicCasino specification.                                            *)
+(* This version of the Casino specification is derived from the one in the   *)
+(* module NonAtomicCasinoFixed, but it corresponds to a multi-threaded       *)
+(* version of Solidity and represents pending transfer invocations using a   *)
+(* bag (multiset) rather than a sequence.                                    *)
+(*                                                                           *)
+(* This specification relies on the BagsExt module from the TLA+ Community   *)
+(* Modules (https://github.com/tlaplus/CommunityModules). If your IDE        *)
+(* doesn't include those, you should clone the repository and add it to the  *)
+(* search path.                                                              *)
 (*****************************************************************************)
-EXTENDS Integers, Sequences, TLC
+EXTENDS Integers, Bags, BagsExt, TLC
 
 Ether == Nat   \* will be overridden for model checking
 
 Address == {"operator", "player", "casino"}
-\* add a state between BET_PLACED and IDLE to avoid reentrant calls to DecideBet
+\* Introduce an additional state to prevent `decideBet` to be called twice in succession
 State == { "IDLE", "GAME_AVAILABLE", "BET_PLACED", "DECIDING_BET" }
 Heads == 0
 Tails == 1
@@ -30,7 +34,7 @@ CallEntry == [op: Operation, arg: Ether]
 
 VARIABLES
     state,         \* state of the casino
-    transfers,     \* stack of pending transfer operations
+    transfers,     \* bag of pending transfers
     secret,        \* secret chosen at game creation
     guess,         \* player's guess when placing the bet
     pot,           \* value of the pot
@@ -38,10 +42,10 @@ VARIABLES
     wallet,        \* amount of ether for each address
     (************************************************************************)
     (* History variables representing the initial funds of the              *)
-    (* operator and the player, used for checking that no money is created  *)
-    (* or lost.                                                             *)
-    (* We use variables rather than constant parameters so that TLC will    *)
-    (* check for all possible values rather than for fixed values.          *)
+    (* operator and the player, used for checking that no money is lost.    *)
+    (* We make these variables rather than constant parameters of the       *)
+    (* specification so that TLC will check for all possible values         *)
+    (* rather than for fixed values per model.                              *)
     (************************************************************************)
     operatorFunds,
     playerFunds
@@ -50,13 +54,14 @@ vars == <<state, transfers, secret, guess, pot, bet, wallet, operatorFunds, play
 
 TypeOK ==
     /\ state \in State
-    /\ transfers \in Seq(CallEntry)
+    /\ IsABag(transfers)
+    /\ DOMAIN transfers \subseteq CallEntry
     /\ secret \in {Heads, Tails}
     /\ guess \in {Heads, Tails}
-    \* The pot may temporarily become negative when removeFromPot is invoked,
-    \* but not if the transfer method succeeds
+    \* The pot may temporarily become negative when removeFromPot is invoked, but
+    \* not if the transfer method succeeds.
     /\ pot \in Int
-    /\ (\A i \in 1 .. Len(transfers): transfers[i].op \notin {"TransferRFP", "FailureTransferRFP"})
+    /\ (\A trf \in DOMAIN transfers: trf.op \notin {"TransferRFP", "FailureTransferRFP"}) 
        => pot \in Ether
     /\ bet \in Ether
     /\ wallet \in [Address -> Ether]
@@ -65,7 +70,7 @@ TypeOK ==
 
 Init ==
     /\ state = "IDLE"
-    /\ transfers = << >>
+    /\ transfers = EmptyBag
     /\ secret \in {Heads, Tails}
     /\ guess \in {Heads, Tails}
     /\ pot = 0
@@ -77,7 +82,7 @@ Init ==
              @@ ("casino" :> 0)
 
 AddToPot(amount) ==
-    /\ wallet["operator"] >= amount   \* implicit "payable" precondition of the function
+    /\ wallet["operator"] >= amount  \* implicit "payable" precondition of the function
     /\ pot' = pot + amount
     /\ wallet' = [wallet EXCEPT !["operator"] = @ - amount,
                                 !["casino"] = @ + amount]
@@ -87,48 +92,42 @@ AddToPot(amount) ==
 RemoveFromPot1(amount) ==
     \* precondition `noActivebet' extended to new state "DECIDING_BET"
     /\ state \notin {"BET_PLACED", "DECIDING_BET"}
-    \* adjust the amount in the pot before the call to transfer
-\*    /\ pot >= amount
-    /\ pot' = pot - amount
-    /\ transfers' = <<[op |-> "TransferRFP", arg |-> amount]>> \o transfers
+    \* We no longer assume that the operation fails if there are insufficient funds.
+    \* Instead the failure will occur during the call to `transfer`.
+    /\ \* adjust the money in the pot before invoking transfer
+       pot' = pot - amount
+    /\ transfers' = BagAdd(transfers, [op |-> "TransferRFP", arg |-> amount])
     /\ UNCHANGED <<state, secret, guess, bet, wallet, operatorFunds, playerFunds>>
 
 \* transfer method called from RemoveToPot: successful execution
-RemoveFromPot2Success == 
-    /\ Len(transfers) > 0
-    /\ Head(transfers).op = "TransferRFP"
-    /\ LET amount == Head(transfers).arg
-       IN  \* transfer can succeed only if the casino account holds enough money
-           /\ wallet["casino"] >= amount
-           /\ wallet' = [wallet EXCEPT !["operator"] = @ + amount,
-                                       !["casino"] = @ - amount]
-           /\ transfers' = <<[op |-> "SuccessTransferRFP", arg |-> amount]>>
-                           \o Tail(transfers)
+RemoveFromPot2Success == \E trf \in DOMAIN transfers :
+    /\ trf.op = "TransferRFP"
+    \* transfer can succeed only if the casino account holds enough money
+    /\ wallet["casino"] >= trf.arg
+    /\ wallet' = [wallet EXCEPT !["operator"] = @ + trf.arg,
+                                !["casino"] = @ - trf.arg]
+    /\ transfers' = BagAdd(BagRemove(transfers, trf), 
+                           [op |-> "SuccessTransferRFP", arg |-> trf.arg])
     /\ UNCHANGED <<state, secret, guess, pot, bet, operatorFunds, playerFunds>>
 
-\* transfer method called from RemoveFromPot: failure of execution
-RemoveFromPot2Failure == 
-    /\ Len(transfers) > 0
-    /\ Head(transfers).op = "TransferRFP"
-    /\ LET amount == Head(transfers).arg
-       IN  transfers' = <<[op |-> "FailureTransferRFP", arg |-> amount]>>
-                        \o Tail(transfers)
+RemoveFromPot2Failure == \E trf \in DOMAIN transfers :
+    /\ trf.op = "TransferRFP"
+    /\ transfers' = BagAdd(BagRemove(transfers, trf), 
+                           [op |-> "FailureTransferRFP", arg |-> trf.arg])
     /\ UNCHANGED <<state, secret, guess, pot, bet, wallet, operatorFunds, playerFunds>>
 
 \* part of the RemoveFromPot method after successful transfer
-RemoveFromPot3Success == 
-    /\ Len(transfers) > 0
-    /\ Head(transfers).op = "SuccessTransferRFP"
-    /\ transfers' = Tail(transfers)
+RemoveFromPot3Success == \E trf \in DOMAIN transfers :
+    /\ trf.op = "SuccessTransferRFP"
+    /\ transfers' = BagRemove(transfers, trf)
     /\ UNCHANGED <<state, secret, guess, pot, bet, wallet, operatorFunds, playerFunds>>
 
 \* part of the RemoveFromPot method after failed transfer
-RemoveFromPot3Failure == 
-    /\ Len(transfers) > 0
-    /\ Head(transfers).op = "FailureTransferRFP"
+RemoveFromPot3Failure == \E trf \in DOMAIN transfers :
+    /\ trf.op = "FailureTransferRFP"
     \* roll back the transaction and restore the pot
-    /\ pot' = pot + Head(transfers).arg
-    /\ transfers' = Tail(transfers)
+    /\ pot' = pot + trf.arg
+    /\ transfers' = BagRemove(transfers, trf)
     /\ UNCHANGED <<state, secret, guess, bet, wallet, operatorFunds, playerFunds>>
 
 CreateGame(_secret) ==
@@ -152,47 +151,41 @@ PlaceBet(amount, _guess) ==
 PlayerWins1 ==
     /\ pot' = pot - bet
     /\ state' = "DECIDING_BET"
-    /\ transfers' = <<[op |-> "TransferPW", arg |-> 2*bet]>> \o transfers
+    /\ transfers' = BagAdd(transfers, [op |-> "TransferPW", arg |-> 2*bet])
     /\ UNCHANGED <<secret, guess, bet, wallet, operatorFunds, playerFunds>>
 
 \* transfer method called from PlayerWins: successful execution
-PlayerWins2Success == 
-    /\ Len(transfers) > 0
-    /\ Head(transfers).op = "TransferPW"
-    /\ LET amount == Head(transfers).arg
-       IN  \* transfer can succeed only if the casino account holds enough money
-           /\ wallet["casino"] >= amount
-           /\ wallet' = [wallet EXCEPT !["player"] = @ + amount,
-                                       !["casino"] = @ - amount]
-           /\ transfers' = <<[op |-> "SuccessTransferPW", arg |-> amount]>> 
-                           \o Tail(transfers)
+PlayerWins2Success == \E trf \in DOMAIN transfers :
+    /\ trf.op = "TransferPW"
+    \* transfer can succeed only if the casino account holds enough money
+    /\ wallet["casino"] >= trf.arg
+    /\ wallet' = [wallet EXCEPT !["player"] = @ + trf.arg,
+                                !["casino"] = @ - trf.arg]
+    /\ transfers' = BagAdd(BagRemove(transfers, trf), 
+                           [op |-> "SuccessTransferPW", arg |-> trf.arg])
     /\ UNCHANGED <<state, secret, guess, pot, bet, operatorFunds, playerFunds>>
 
 \* transfer method called from PlayerWins: failing execution
-PlayerWins2Failure == 
-    /\ Len(transfers) > 0
-    /\ Head(transfers).op = "TransferPW"
-    /\ LET amount == Head(transfers).arg
-       IN  transfers' = <<[op |-> "FailureTransferPW", arg |-> amount]>> 
-                        \o Tail(transfers)
+PlayerWins2Failure == \E trf \in DOMAIN transfers :
+    /\ trf.op = "TransferPW"
+    /\ transfers' = BagAdd(BagRemove(transfers, trf), 
+                           [op |-> "FailureTransferPW", arg |-> trf.arg])
     /\ UNCHANGED <<state, secret, guess, pot, bet, wallet, operatorFunds, playerFunds>>
 
 \* part of PlayerWins after successful transfer
-PlayerWins3Success == 
-    /\ Len(transfers) > 0
-    /\ Head(transfers).op = "SuccessTransferPW"
+PlayerWins3Success == \E trf \in DOMAIN transfers :
+    /\ trf.op = "SuccessTransferPW"
     /\ bet' = 0
     /\ state' = "IDLE"
-    /\ transfers' = Tail(transfers)
+    /\ transfers' = BagRemove(transfers, trf)
     /\ UNCHANGED <<secret, guess, pot, wallet, operatorFunds, playerFunds>>
 
 \* part of PlayerWins after failed transfer
-PlayerWins3Failure == 
-    /\ Len(transfers) > 0
-    /\ Head(transfers).op = "FailureTransferPW"
-    /\ pot' = pot + bet \* restore pot
+PlayerWins3Failure == \E trf \in DOMAIN transfers :
+    /\ trf.op = "FailureTransferPW"
+    /\ pot' = pot + bet  \* restore pot
     /\ state' = "BET_PLACED"  \* restore state of the contract
-    /\ transfers' = Tail(transfers)
+    /\ transfers' = BagRemove(transfers, trf)
     /\ UNCHANGED <<secret, guess, bet, wallet, operatorFunds, playerFunds>>
 
 OperatorWins ==
@@ -217,25 +210,22 @@ Next ==
     \/ \E _secret \in {Heads, Tails} : CreateGame(_secret)
     \/ \E amount \in Ether, _guess \in {Heads, Tails} : PlaceBet(amount, _guess)
     \/ DecideBet 
-    \/ PlayerWins2Success \/ PlayerWins2Failure
+    \/ PlayerWins2Success \/ PlayerWins2Failure 
     \/ PlayerWins3Success \/ PlayerWins3Failure
 
-\* Require weak fairness for DecideBet, as well as for the actions modeling transfers.
-\* In particular, this ensures that a pending transfer called from RemoveFromPot
-\* will not block a transfer from PlayerWins.
-\* By assuming strong fairness for PlayerWins2Success, we require that transfers
-\* to the winning player will not fail indefinitely. In particular, the player
-\* cannot forever refuse to be paid out, thereby blocking the casino.
+\* Require weak fairness for DecideBet and for the PlayerWins3 actions.
+\* We still need strong fairness for PlayerWins2Success so that a non-cooperative
+\* player cannot block the casino. However, we don't need fairness for the
+\* other transfer actions because they cannot block the PlayerWins actions
+\* due to the bag data structure.
 Fairness == 
     /\ WF_vars(DecideBet) 
-    /\ WF_vars(RemoveFromPot2Success) /\ WF_vars(RemoveFromPot2Failure)
-    /\ WF_vars(RemoveFromPot3Success) /\ WF_vars(RemoveFromPot3Failure)
-    /\ SF_vars(PlayerWins2Success) /\ WF_vars(PlayerWins2Failure)
+    /\ SF_vars(PlayerWins2Success) 
     /\ WF_vars(PlayerWins3Success) /\ WF_vars(PlayerWins3Failure)
 
 Spec == Init /\ [][Next]_vars /\ Fairness
 
-\* No money is created or lost
+\* No money is created ot lost
 Inv == 
     wallet["operator"] + wallet["player"] + wallet["casino"] 
     = operatorFunds + playerFunds
