@@ -49,9 +49,9 @@ contract Casino {
     /// @notice modifies address(this).balance
     /// @notice modifies operator.balance
     function removeFromPot(uint amount) public {
-        // no active bet ongoing:
         require (state != State.BET_PLACED);
         require (msg.sender == operator);
+        require (amount <= pot);
         operator.transfer(amount);
         pot = pot - amount;
     }
