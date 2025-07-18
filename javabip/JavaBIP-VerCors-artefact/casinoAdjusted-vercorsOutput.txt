@@ -1,0 +1,85 @@
+[INFO] Start: VerCors (at 10:43:29)
+[WARN] Annotation array initializer at broken position is discarded
+[WARN] Annotation array initializer at broken position is discarded
+======================================
+At Main.java
+--------------------------------------
+   14  import static org.javabip.spec.casinoAdjusted.Constants.*;
+   15  
+      [---------------------
+   16  public class Main {
+   17      public static void main(String[] args) throws Exception {
+   18          ActorSystem system = ActorSystem.create(ACTOR_SYSTEM);
+       ... (62 lines omitted)
+   81          }
+   82      }
+   83  }
+       -]
+   84  
+   85
+--------------------------------------
+[1/2] In this class, only the following 1 glues are kept:
+--------------------------------------
+At Main.java
+--------------------------------------
+   21          BIPGlue glue = new /*@ vercorsBipJob @*/ TwoSynchronGlueBuilder() {
+   22              @Override
+                         [--------------------
+   23              public void configure() {
+   24                  port(Operator.class, PREPARE_TO_ADD).requiresNothing();
+   25                  port(Operator.class, PREPARE_TO_ADD).acceptsNothing();
+       ... (31 lines omitted)
+   57                  data(Casino.class, OUTGOING_MONEY).to(Player.class, INCOMING_MONEY);
+   58                  data(Casino.class, CASINO_AVAILABLE_FUNDS).to(Operator.class, OPERATOR_AVAILABLE_FUNDS);
+   59              }
+       -------------]
+   60          }.build();
+   61
+--------------------------------------
+[2/2] glue 1
+======================================
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[INFO] Converted 9 JavaBIP port synchronizations into 21 JavaBIP transition synchronizations
+[INFO] Verification completed successfully.
+[WARN] JavaBIP verification report was produced, but no output path was specified. Use `--bip-report-file` to specify an output. See `--help` for more info.
+[INFO] Done: VerCors (at 10:44:07, duration: 00:00:38)
+

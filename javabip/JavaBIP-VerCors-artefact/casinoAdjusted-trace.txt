@@ -1,0 +1,225 @@
+OPERATOR101 created (wallet=500)
+CASINO201: created (operator 101)
+PLAYER301: created (purse=100)
+OPERATOR101: decided to withdraw 0, wallet: 500
+PLAYER301: bet 44 prepared, purse: 56
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 0
+OPERATOR101: removed 0 from pot, wallet: 500
+CASINO201: 0 removed by operator 101, pot: 0
+OPERATOR101: decided to put 332, wallet: 168
+CASINO201: 332 received from operator 101, pot: 332
+OPERATOR101: added 332 to pot, wallet: 168
+OPERATOR101: decided to put 111, wallet: 57
+CASINO201: 111 received from operator 101, pot: 443
+OPERATOR101: added 111 to pot, wallet: 57
+OPERATOR101: decided to put 5, wallet: 52
+PLAYER301: bet 44 placed, purse: 56
+CASINO201: received bet: 44, guess: TAILS from player 301
+OPERATOR101: added 5 to pot, wallet: 52
+CASINO201: 5 received from operator 101, pot: 448
+OPERATOR101: decided to put 12, wallet: 40
+PLAYER301: bet 18 prepared, purse: 38
+CASINO201: 44 lost, pot: 404
+OPERATOR101: making one step in the game. newPot == 448
+PLAYER301: won 88 purse: 126
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 404
+PLAYER301: bet 18 placed, purse: 126
+CASINO201: received bet: 18, guess: HEADS from player 301
+CASINO201: 18 won, pot: 422
+OPERATOR101: making one step in the game. newPot == 404
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 422
+PLAYER301: bet 47 prepared, purse: 79
+PLAYER301: bet 47 placed, purse: 79
+CASINO201: received bet: 47, guess: TAILS from player 301
+CASINO201: 12 received from operator 101, pot: 434
+OPERATOR101: added 12 to pot, wallet: 40
+OPERATOR101: decided to withdraw 72, wallet: 40
+PLAYER301: bet 3 prepared, purse: 76
+CASINO201: 47 lost, pot: 387
+PLAYER301: won 94 purse: 170
+OPERATOR101: making one step in the game. newPot == 434
+OPERATOR101: removed 72 from pot, wallet: 112
+CASINO201: 72 removed by operator 101, pot: 315
+OPERATOR101: decided to withdraw 138, wallet: 112
+CASINO201: 138 removed by operator 101, pot: 177
+OPERATOR101: removed 138 from pot, wallet: 250
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 177
+OPERATOR101: decided to put 104, wallet: 146
+CASINO201: 104 received from operator 101, pot: 281
+OPERATOR101: added 104 to pot, wallet: 146
+PLAYER301: bet 3 placed, purse: 170
+CASINO201: received bet: 3, guess: TAILS from player 301
+CASINO201: 3 won, pot: 284
+OPERATOR101: making one step in the game. newPot == 281
+OPERATOR101: decided to withdraw 231, wallet: 146
+PLAYER301: bet 50 prepared, purse: 120
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 284
+PLAYER301: bet 50 placed, purse: 120
+CASINO201: received bet: 50, guess: TAILS from player 301
+CASINO201: 50 lost, pot: 234
+OPERATOR101: making one step in the game. newPot == 284
+PLAYER301: won 100 purse: 220
+PLAYER301: bet 127 prepared, purse: 93
+OPERATOR101: removed 231 from pot, wallet: 377
+CASINO201: 231 removed by operator 101, pot: 3
+OPERATOR101: decided to withdraw 2, wallet: 377
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 3
+OPERATOR101: removed 2 from pot, wallet: 379
+CASINO201: 2 removed by operator 101, pot: 1
+OPERATOR101: decided to put 67, wallet: 312
+CASINO201: 67 received from operator 101, pot: 68
+OPERATOR101: added 67 to pot, wallet: 312
+OPERATOR101: decided to put 124, wallet: 188
+OPERATOR101: added 124 to pot, wallet: 188
+CASINO201: 124 received from operator 101, pot: 192
+PLAYER301: bet 127 placed, purse: 93
+CASINO201: received bet: 127, guess: HEADS from player 301
+CASINO201: 127 won, pot: 319
+OPERATOR101: making one step in the game. newPot == 192
+OPERATOR101: decided to put 54, wallet: 134
+PLAYER301: bet 46 prepared, purse: 47
+OPERATOR101: added 54 to pot, wallet: 134
+CASINO201: 54 received from operator 101, pot: 373
+OPERATOR101: decided to withdraw 211, wallet: 134
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 373
+PLAYER301: bet 46 placed, purse: 47
+CASINO201: received bet: 46, guess: HEADS from player 301
+OPERATOR101: making one step in the game. newPot == 373
+CASINO201: 46 won, pot: 419
+PLAYER301: bet 40 prepared, purse: 7
+OPERATOR101: removed 211 from pot, wallet: 345
+CASINO201: 211 removed by operator 101, pot: 208
+OPERATOR101: decided to withdraw 21, wallet: 345
+OPERATOR101: removed 21 from pot, wallet: 366
+CASINO201: 21 removed by operator 101, pot: 187
+OPERATOR101: decided to withdraw 185, wallet: 366
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 187
+CASINO201: received bet: 40, guess: HEADS from player 301
+PLAYER301: bet 40 placed, purse: 7
+CASINO201: 40 won, pot: 227
+OPERATOR101: making one step in the game. newPot == 187
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 227
+PLAYER301: bet 4 prepared, purse: 3
+CASINO201: received bet: 4, guess: HEADS from player 301
+PLAYER301: bet 4 placed, purse: 3
+CASINO201: 4 won, pot: 231
+OPERATOR101: making one step in the game. newPot == 227
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 231
+OPERATOR101: removed 185 from pot, wallet: 551
+CASINO201: 185 removed by operator 101, pot: 46
+OPERATOR101: decided to withdraw 35, wallet: 551
+PLAYER301: bet 3 prepared, purse: 0
+CASINO201: 35 removed by operator 101, pot: 11
+OPERATOR101: removed 35 from pot, wallet: 586
+OPERATOR101: decided to put 268, wallet: 318
+CASINO201: 268 received from operator 101, pot: 279
+OPERATOR101: added 268 to pot, wallet: 318
+OPERATOR101: decided to withdraw 225, wallet: 318
+PLAYER301: bet 3 placed, purse: 0
+CASINO201: received bet: 3, guess: HEADS from player 301
+CASINO201: 3 lost, pot: 276
+PLAYER301: won 6 purse: 6
+OPERATOR101: making one step in the game. newPot == 279
+PLAYER301: bet 5 prepared, purse: 1
+OPERATOR101: removed 225 from pot, wallet: 543
+CASINO201: 225 removed by operator 101, pot: 51
+OPERATOR101: decided to withdraw 10, wallet: 543
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 51
+OPERATOR101: removed 10 from pot, wallet: 553
+CASINO201: 10 removed by operator 101, pot: 41
+OPERATOR101: decided to withdraw 17, wallet: 553
+CASINO201: 17 removed by operator 101, pot: 24
+OPERATOR101: removed 17 from pot, wallet: 570
+PLAYER301: bet 5 placed, purse: 1
+CASINO201: received bet: 5, guess: TAILS from player 301
+PLAYER301: won 10 purse: 11
+CASINO201: 5 lost, pot: 19
+OPERATOR101: making one step in the game. newPot == 24
+OPERATOR101: decided to withdraw 6, wallet: 570
+PLAYER301: bet 1 prepared, purse: 10
+CASINO201: 6 removed by operator 101, pot: 13
+OPERATOR101: removed 6 from pot, wallet: 576
+OPERATOR101: decided to withdraw 0, wallet: 576
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 13
+OPERATOR101: removed 0 from pot, wallet: 576
+CASINO201: 0 removed by operator 101, pot: 13
+PLAYER301: bet 1 placed, purse: 10
+CASINO201: received bet: 1, guess: HEADS from player 301
+OPERATOR101: decided to put 512, wallet: 64
+PLAYER301: bet 4 prepared, purse: 6
+CASINO201: 512 received from operator 101, pot: 525
+OPERATOR101: added 512 to pot, wallet: 64
+CASINO201: 1 won, pot: 526
+OPERATOR101: making one step in the game. newPot == 525
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 526
+PLAYER301: bet 4 placed, purse: 6
+CASINO201: received bet: 4, guess: HEADS from player 301
+CASINO201: 4 won, pot: 530
+OPERATOR101: making one step in the game. newPot == 526
+PLAYER301: bet 2 prepared, purse: 4
+OPERATOR101: decided to put 37, wallet: 27
+CASINO201: 37 received from operator 101, pot: 567
+OPERATOR101: added 37 to pot, wallet: 27
+OPERATOR101: decided to put 25, wallet: 2
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 567
+PLAYER301: bet 2 placed, purse: 4
+CASINO201: received bet: 2, guess: HEADS from player 301
+PLAYER301: bet 3 prepared, purse: 1
+OPERATOR101: added 25 to pot, wallet: 2
+CASINO201: 25 received from operator 101, pot: 592
+CASINO201: 2 lost, pot: 590
+PLAYER301: won 4 purse: 5
+OPERATOR101: making one step in the game. newPot == 592
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 590
+OPERATOR101: decided to withdraw 72, wallet: 2
+PLAYER301: bet 3 placed, purse: 5
+CASINO201: received bet: 3, guess: TAILS from player 301
+CASINO201: 3 lost, pot: 587
+PLAYER301: won 6 purse: 11
+OPERATOR101: making one step in the game. newPot == 590
+PLAYER301: bet 5 prepared, purse: 6
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 587
+CASINO201: 72 removed by operator 101, pot: 515
+OPERATOR101: removed 72 from pot, wallet: 74
+OPERATOR101: decided to put 54, wallet: 20
+PLAYER301: bet 5 placed, purse: 6
+CASINO201: received bet: 5, guess: HEADS from player 301
+CASINO201: 5 won, pot: 520
+OPERATOR101: making one step in the game. newPot == 515
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game. newPot == 520
+CASINO201: 54 received from operator 101, pot: 574
+OPERATOR101: added 54 to pot, wallet: 20
+OPERATOR101: decided to put 4, wallet: 16
+PLAYER301: bet 1 prepared, purse: 5
+CASINO201: 4 received from operator 101, pot: 578
+OPERATOR101: added 4 to pot, wallet: 16
+OPERATOR101: decided to put 15, wallet: 1
+OPERATOR101: added 15 to pot, wallet: 1
+CASINO201: 15 received from operator 101, pot: 593
+OPERATOR101: decided to withdraw 462, wallet: 1
+PLAYER301: bet 1 placed, purse: 5
+CASINO201: received bet: 1, guess: TAILS from player 301
+PLAYER301: bet 4 prepared, purse: 1
+CASINO201: 1 lost, pot: 592
+PLAYER301: won 2 purse: 3
+OPERATOR101: making one step in the game. newPot == 593
+OPERATOR101: removed 462 from pot, wallet: 463
+CASINO201: 462 removed by operator 101, pot: 130
+...

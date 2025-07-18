@@ -1,0 +1,89 @@
+OPERATOR101 created (wallet=500)
+CASINO201: created (operator 101)
+PLAYER301: created (purse=100)
+OPERATOR101: decided to put 356, wallet: 144
+PLAYER301: bet 4 prepared, purse: 96
+OPERATOR101: added 356 to pot, wallet: 144
+CASINO201: 356 received from operator 101, pot: 356
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game
+PLAYER301: bet 4 placed, purse: 96
+CASINO201: received bet: 4, guess: TAILS from player 301
+PLAYER301: bet 39 prepared, purse: 57
+OPERATOR101: decided to put 46, wallet: 98
+CASINO201: 4 won, pot: 360
+OPERATOR101: making one step in the game
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game
+PLAYER301: bet 39 placed, purse: 57
+CASINO201: received bet: 39, guess: TAILS from player 301
+CASINO201: 39 lost, pot: 321
+PLAYER301: won 78 purse: 135
+OPERATOR101: making one step in the game
+PLAYER301: bet 110 prepared, purse: 25
+CASINO201: 46 received from operator 101, pot: 367
+OPERATOR101: added 46 to pot, wallet: 98
+OPERATOR101: decided to withdraw 290, wallet: 98
+CASINO201: GAME CREATED
+OPERATOR101: making one step in the game
+PLAYER301: bet 110 placed, purse: 25
+CASINO201: received bet: 110, guess: HEADS from player 301
+PLAYER301: bet 14 prepared, purse: 11
+CASINO201: 110 lost, pot: 257
+PLAYER301: won 220 purse: 231
+OPERATOR101: making one step in the game
+CASINO201: 290 removed by operator 101, pot: -33
+OPERATOR101: removed 290 from pot, wallet: 388
+
+01:46:20.990 [ACTOR_SYSTEM-akka.actor.default-dispatcher-6] ERROR org.javabip.executor.BehaviourImpl - Casino: Invariant violation: bet >= 0 && pot >= bet
+01:46:20.990 [ACTOR_SYSTEM-akka.actor.default-dispatcher-11] ERROR org.javabip.executor.BehaviourImpl - Operator: Invariant violation: pot >= 0 && wallet >= 0
+[ERROR] [07/10/2025 01:46:20.996] [ACTOR_SYSTEM-akka.actor.default-dispatcher-7] [akka://ACTOR_SYSTEM/user/ENGINE/OPERATOR_SPEC101] Runtime Verification exception
+org.javabip.exceptions.BIPException: Runtime Verification exception
+	at org.javabip.executor.BehaviourImpl.checkInvariant(BehaviourImpl.java:738)
+	at org.javabip.executor.ExecutorKernel.step(ExecutorKernel.java:139)
+	at jdk.internal.reflect.GeneratedMethodAccessor3.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at akka.actor.TypedActor$MethodCall.apply(TypedActor.scala:153)
+	at akka.actor.TypedActor$TypedActor$$anon$1.applyOrElse$$anonfun$1(TypedActor.scala:337)
+	at akka.actor.TypedActor$TypedActor.withContext(TypedActor.scala:327)
+	at akka.actor.TypedActor$TypedActor$$anon$1.applyOrElse(TypedActor.scala:362)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:471)
+	at akka.actor.TypedActor$TypedActor.aroundReceive(TypedActor.scala:264)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:579)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at akka.dispatch.Mailbox.exec(Mailbox.scala:243)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:290)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1020)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1656)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1594)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:183)
+
+[ERROR] [07/10/2025 01:46:20.997] [ACTOR_SYSTEM-akka.actor.default-dispatcher-7] [akka://ACTOR_SYSTEM/user/ENGINE/CASINO_SPEC201] Runtime Verification exception
+org.javabip.exceptions.BIPException: Runtime Verification exception
+	at org.javabip.executor.BehaviourImpl.checkInvariant(BehaviourImpl.java:738)
+	at org.javabip.executor.ExecutorKernel.step(ExecutorKernel.java:139)
+	at jdk.internal.reflect.GeneratedMethodAccessor3.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at akka.actor.TypedActor$MethodCall.apply(TypedActor.scala:153)
+	at akka.actor.TypedActor$TypedActor$$anon$1.applyOrElse$$anonfun$1(TypedActor.scala:337)
+	at akka.actor.TypedActor$TypedActor.withContext(TypedActor.scala:327)
+	at akka.actor.TypedActor$TypedActor$$anon$1.applyOrElse(TypedActor.scala:362)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:471)
+	at akka.actor.TypedActor$TypedActor.aroundReceive(TypedActor.scala:264)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:579)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at akka.dispatch.Mailbox.exec(Mailbox.scala:243)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:290)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1020)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1656)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1594)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:183)
+

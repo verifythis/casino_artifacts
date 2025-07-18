@@ -1,0 +1,281 @@
+[INFO] Start: VerCors (at 10:37:24)
+[WARN] Annotation array initializer at broken position is discarded
+[WARN] Annotation array initializer at broken position is discarded
+======================================
+At Main.java
+--------------------------------------
+   16  import static org.javabip.spec.casinoBroken.Constants.*;
+   17  
+      [---------------------
+   18  public class Main {
+   19      public static void main(String[] args) throws Exception {
+   20          ActorSystem system = ActorSystem.create(ACTOR_SYSTEM);
+       ... (62 lines omitted)
+   83          }
+   84      }
+   85  }
+       -]
+   86  
+--------------------------------------
+[1/2] In this class, only the following 1 glues are kept:
+--------------------------------------
+At Main.java
+--------------------------------------
+   23          BIPGlue glue = new /*@ vercorsBipJob @*/ TwoSynchronGlueBuilder() {
+   24              @Override
+                         [--------------------
+   25              public void configure() {
+   26                  port(Operator.class, PREPARE_TO_ADD).requiresNothing();
+   27                  port(Operator.class, PREPARE_TO_ADD).acceptsNothing();
+       ... (31 lines omitted)
+   59                  data(Casino.class, OUTGOING_MONEY).to(Player.class, INCOMING_MONEY);
+   60                  data(Casino.class, AVAILABLE_FUNDS).to(Operator.class, AVAILABLE_FUNDS);
+   61              }
+       -------------]
+   62          }.build();
+   63
+--------------------------------------
+[2/2] glue 1
+======================================
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.PortType via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[WARN] Attempting to load a shim of org.javabip.annotations.Math via reflection.
+[INFO] Converted 9 JavaBIP port synchronizations into 21 JavaBIP transition synchronizations
+======================================
+At Casino.java
+--------------------------------------
+   48  
+   49      // Remove money from pot
+          [-------------------------------------------------------------------
+   50      @Transition(name = REMOVE_FROM_POT, source = IDLE, target = IDLE,
+   51          // With this guard, cannot establish component invariant pot >= 0. 
+   52          // It is not provable that funds < pot.
+   53          guard = IS_OPERATOR
+   54          )
+       ---------]
+   55      @Transition(name = REMOVE_FROM_POT, source = GAME_AVAILABLE, target = GAME_AVAILABLE,
+   56          guard = IS_OPERATOR
+--------------------------------------
+[1/3] In the following transition,
+--------------------------------------
+At Casino.java
+--------------------------------------
+   56          guard = IS_OPERATOR
+   57          )
+                 [-------------------------------------------------------------------------------------------------
+   58      public void removeFromPot(@Data(name = OPERATOR) int sender, @Data(name = INCOMING_FUNDS) int funds) {
+   59          pot = pot - funds;
+   60          // System.out.println("CASINO" + id + ": " + funds +
+   61          //         " removed by operator " + sender +
+   62          //         ", pot: " + pot);
+   63      }
+       -----]
+   64  
+   65      // Operator opens the game
+--------------------------------------
+[2/3] with the following update function, the invariant of the component is not maintained, since,
+--------------------------------------
+At <string data>
+--------------------------------------
+      [----------------------
+    1  bet >= 0 && pot >= bet
+       ----------------------]
+    2
+--------------------------------------
+[3/3] this expression may be false (https://utwente.nl/vercors#bipComponentInvariantNotMaintained:false)
+======================================
+======================================
+At Casino.java
+--------------------------------------
+   53          guard = IS_OPERATOR
+   54          )
+          [---------------------------------------------------------------------------------------
+   55      @Transition(name = REMOVE_FROM_POT, source = GAME_AVAILABLE, target = GAME_AVAILABLE,
+   56          guard = IS_OPERATOR
+   57          )
+       ---------]
+   58      public void removeFromPot(@Data(name = OPERATOR) int sender, @Data(name = INCOMING_FUNDS) int funds) {
+   59          pot = pot - funds;
+--------------------------------------
+[1/3] In the following transition,
+--------------------------------------
+At Casino.java
+--------------------------------------
+   56          guard = IS_OPERATOR
+   57          )
+                 [-------------------------------------------------------------------------------------------------
+   58      public void removeFromPot(@Data(name = OPERATOR) int sender, @Data(name = INCOMING_FUNDS) int funds) {
+   59          pot = pot - funds;
+   60          // System.out.println("CASINO" + id + ": " + funds +
+   61          //         " removed by operator " + sender +
+   62          //         ", pot: " + pot);
+   63      }
+       -----]
+   64  
+   65      // Operator opens the game
+--------------------------------------
+[2/3] with the following update function, the invariant of the component is not maintained, since,
+--------------------------------------
+At <string data>
+--------------------------------------
+      [----------------------
+    1  bet >= 0 && pot >= bet
+       ----------------------]
+    2
+--------------------------------------
+[3/3] this expression may be false (https://utwente.nl/vercors#bipComponentInvariantNotMaintained:false)
+======================================
+======================================
+At Operator.java
+--------------------------------------
+   33      @Transition(name = CREATE_GAME, source = WORKING, target = WORKING, requires = "newPot >= 0")
+   34      @Transition(name = CREATE_GAME, source = PUT_FUNDS, target = PUT_FUNDS, requires = "newPot >= 0")
+          [-----------------------------------------------------------------------------------------------------------
+   35      @Transition(name = CREATE_GAME, source = WITHDRAW_FUNDS, target = WITHDRAW_FUNDS, requires = "newPot >= 0")
+           -----------------------------------------------------------------------------------------------------------]
+   36      @Transition(name = DECIDE_BET, source = WORKING, target = WORKING, requires = "newPot >= 0")
+   37      @Transition(name = DECIDE_BET, source = PUT_FUNDS, target = PUT_FUNDS, requires = "newPot >= 0")
+--------------------------------------
+[1/3] In the following transition,
+--------------------------------------
+At Operator.java
+--------------------------------------
+   37      @Transition(name = DECIDE_BET, source = PUT_FUNDS, target = PUT_FUNDS, requires = "newPot >= 0")
+   38      @Transition(name = DECIDE_BET, source = WITHDRAW_FUNDS, target = WITHDRAW_FUNDS, requires = "newPot >= 0")
+                 [-----------------------------------------------------------
+   39      public void gameStep(@Data(name = AVAILABLE_FUNDS) int newPot) {
+   40          this.pot = newPot;
+   41              // System.out.println("OPERATOR" + id + ": making one step in the game. newPot == " + newPot);
+   42      }
+       -----]
+   43  
+   44      @Transition(name = PREPARE_TO_ADD, source = WORKING, target = PUT_FUNDS, guard = ENOUGH_FUNDS)
+--------------------------------------
+[2/3] with the following update function, the invariant of the state is not maintained, since,
+--------------------------------------
+At <string data>
+--------------------------------------
+      [----------------------------------------
+    1  0 <= amountToMove && amountToMove <= pot
+       ----------------------------------------]
+    2
+--------------------------------------
+[3/3] this expression may be false (https://utwente.nl/vercors#bipStateInvariantNotMaintained:false)
+======================================
+======================================
+At Operator.java
+--------------------------------------
+   36      @Transition(name = DECIDE_BET, source = WORKING, target = WORKING, requires = "newPot >= 0")
+   37      @Transition(name = DECIDE_BET, source = PUT_FUNDS, target = PUT_FUNDS, requires = "newPot >= 0")
+          [----------------------------------------------------------------------------------------------------------
+   38      @Transition(name = DECIDE_BET, source = WITHDRAW_FUNDS, target = WITHDRAW_FUNDS, requires = "newPot >= 0")
+           ----------------------------------------------------------------------------------------------------------]
+   39      public void gameStep(@Data(name = AVAILABLE_FUNDS) int newPot) {
+   40          this.pot = newPot;
+--------------------------------------
+[1/3] In the following transition,
+--------------------------------------
+At Operator.java
+--------------------------------------
+   37      @Transition(name = DECIDE_BET, source = PUT_FUNDS, target = PUT_FUNDS, requires = "newPot >= 0")
+   38      @Transition(name = DECIDE_BET, source = WITHDRAW_FUNDS, target = WITHDRAW_FUNDS, requires = "newPot >= 0")
+                 [-----------------------------------------------------------
+   39      public void gameStep(@Data(name = AVAILABLE_FUNDS) int newPot) {
+   40          this.pot = newPot;
+   41              // System.out.println("OPERATOR" + id + ": making one step in the game. newPot == " + newPot);
+   42      }
+       -----]
+   43  
+   44      @Transition(name = PREPARE_TO_ADD, source = WORKING, target = PUT_FUNDS, guard = ENOUGH_FUNDS)
+--------------------------------------
+[2/3] with the following update function, the invariant of the state is not maintained, since,
+--------------------------------------
+At <string data>
+--------------------------------------
+      [----------------------------------------
+    1  0 <= amountToMove && amountToMove <= pot
+       ----------------------------------------]
+    2
+--------------------------------------
+[3/3] this expression may be false (https://utwente.nl/vercors#bipStateInvariantNotMaintained:false)
+======================================
+======================================
+At Operator.java
+--------------------------------------
+   61      }
+   62  
+          [------------------------------------------------------------------------------
+   63      @Transition(name = REMOVE_FROM_POT, source = WITHDRAW_FUNDS, target = WORKING)
+           ------------------------------------------------------------------------------]
+   64      public void removeFromPot (@Data(name = AVAILABLE_FUNDS) int newPot) {
+   65          wallet += amountToMove;
+--------------------------------------
+[1/3] In the following transition,
+--------------------------------------
+At Operator.java
+--------------------------------------
+   62  
+   63      @Transition(name = REMOVE_FROM_POT, source = WITHDRAW_FUNDS, target = WORKING)
+                 [-----------------------------------------------------------------
+   64      public void removeFromPot (@Data(name = AVAILABLE_FUNDS) int newPot) {
+   65          wallet += amountToMove;
+   66          this.pot = newPot - amountToMove;
+   67          // System.out.println("OPERATOR" + id + ": removed " + amountToMove + " from pot, wallet: " + wallet);
+   68      }
+       -----]
+   69  
+   70      @Pure
+--------------------------------------
+[2/3] with the following update function, the invariant of the component is not maintained, since,
+--------------------------------------
+At <string data>
+--------------------------------------
+      [--------
+    1  pot >= 0 && wallet >= 0
+       --------]
+    2
+--------------------------------------
+[3/3] this expression may be false (https://utwente.nl/vercors#bipComponentInvariantNotMaintained:false)
+======================================
+[WARN] JavaBIP verification report was produced, but no output path was specified. Use `--bip-report-file` to specify an output. See `--help` for more info.
+[INFO] Done: VerCors (at 10:38:02, duration: 00:00:37)
+                                                                              
+Process finished with exit code 1
+
